@@ -6,7 +6,6 @@ C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug
 C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\ProjectSetup.runtimeconfig.json
 C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\ProjectSetup.runtimeconfig.dev.json
 C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\ProjectSetup.dll
-C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\ref\ProjectSetup.dll
 C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\ProjectSetup.pdb
 C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\Humanizer.dll
 C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\Microsoft.AspNetCore.Cryptography.Internal.dll
@@ -69,3 +68,4 @@ C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug
 C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\aleksandar.stojmenov\Projects\Tasks\ProjectSetup\ProjectSetup\bin\Debug\net5.0\ref\ProjectSetup.dll
