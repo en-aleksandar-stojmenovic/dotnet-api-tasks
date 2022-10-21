@@ -9,15 +9,16 @@ namespace ProjectSetup.Controllers.V2
 	public class CategoryController : Controller
 	{
 		private List<Category> _categories;
+
 		public CategoryController()
 		{
 			_categories = new List<Category>();
 
-			_categories.Add(new Category { Id = Guid.NewGuid().ToString(), Name = "Life" });
-			_categories.Add(new Category { Id = Guid.NewGuid().ToString(), Name = "People" });
-			_categories.Add(new Category { Id = Guid.NewGuid().ToString(), Name = "Everyday" });
-			_categories.Add(new Category { Id = Guid.NewGuid().ToString(), Name = "News" });
-			_categories.Add(new Category { Id = Guid.NewGuid().ToString(), Name = "Travel" });
+			_categories.Add(new Category { Id = Guid.NewGuid(), Name = "Life" });
+			_categories.Add(new Category { Id = Guid.NewGuid(), Name = "People" });
+			_categories.Add(new Category { Id = Guid.NewGuid(), Name = "Everyday" });
+			_categories.Add(new Category { Id = Guid.NewGuid(), Name = "News" });
+			_categories.Add(new Category { Id = Guid.NewGuid(), Name = "Travel" });
 		}
 
 		[HttpGet(ApiRoutes.Categories.GetAll)]
