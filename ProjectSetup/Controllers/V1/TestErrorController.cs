@@ -23,17 +23,17 @@ namespace ProjectSetup.Controllers.V1
 		[HttpGet(ApiRoutes.Errors.NotFound)]
 		public ActionResult<Category> GetNotFound()
 		{
-			var thing = _context.Categories.Find(Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66efa6"));
-			if (thing == null) return NotFound(_fileService.LogErrorsAndReturnResponse(new ApiResponse(404)));
-			return thing;
+			var category = _context.Categories.Find(Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66efa6"));
+			if (category == null) return NotFound(_fileService.LogErrorsAndReturnResponse(new ApiResponse(404)));
+			return category;
 		}
 
 		[HttpGet(ApiRoutes.Errors.ServerError)]
 		public ActionResult<string> GetServerError()
 		{
-			var thing = _context.Categories.Find(-1);
-			var thingToReturn = thing.ToString();
-			return thingToReturn;
+			var category = _context.Categories.Find(-1);
+			var categoryToReturn = category.ToString();
+			return categoryToReturn;
 
 		}
 
