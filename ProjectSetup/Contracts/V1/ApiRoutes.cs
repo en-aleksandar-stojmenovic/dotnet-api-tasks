@@ -15,5 +15,12 @@
 			public const string Delete = Base + "/categories/{categoryId}";
 			public const string DeleteByName = Base + "/categories/name/{categoryName}";
 		}
+
+		public static class Errors
+		{
+			public const string NotFound = Base + "/not-found";
+			public const string ServerError = Base + "/server-error";
+			public const string BadRequest = Base + "/bad-request";
+		}
 	}
 }

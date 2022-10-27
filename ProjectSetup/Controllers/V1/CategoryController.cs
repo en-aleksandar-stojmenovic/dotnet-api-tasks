@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectSetup.Contracts.V1;
 using ProjectSetup.Contracts.V1.Requests;
+using ProjectSetup.Contracts.V1.Responses;
 using ProjectSetup.Data;
 using ProjectSetup.Domain;
+using ProjectSetup.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,10 +16,12 @@ namespace ProjectSetup.Controllers.V1
 	public class CategoryController : ControllerBase
 	{
 		private readonly ApplicationDbContext _context;
+		private readonly IFileService _fileService;
 
-		public CategoryController(ApplicationDbContext context)
+		public CategoryController(ApplicationDbContext context, IFileService fileService)
 		{
 			_context = context;
+			_fileService = fileService;
 		}
 
 		[HttpGet(ApiRoutes.Categories.GetAll)]
@@ -29,13 +33,19 @@ namespace ProjectSetup.Controllers.V1
 		[HttpGet(ApiRoutes.Categories.GetCategory)]
 		public async Task<ActionResult<Category>> Get([FromRoute] Guid categoryId)
 		{
-			return Ok(await _context.Categories.FindAsync(categoryId));
+			var category = await _context.Categories.FindAsync(categoryId);
+			if (category == null) return NotFound(_fileService.LogErrorsAndReturnResponse(new ApiResponse(404, "Category with Id: '" + categoryId + "' not found")));
+
+			return Ok(category);
 		}
 
 		[HttpGet(ApiRoutes.Categories.GetCategoryByName)]
 		public async Task<ActionResult<Category>> GetCategoryByName([FromRoute] string categoryName)
 		{
-			return Ok(await _context.Categories.SingleOrDefaultAsync(x => x.Name == categoryName));
+			var category = await _context.Categories.SingleOrDefaultAsync(x => x.Name == categoryName);
+			if (category == null) return NotFound(_fileService.LogErrorsAndReturnResponse(new ApiResponse(404, "Category with Name: '" + categoryName + "' not found")));
+
+			return Ok(category);
 		}
 
 		[HttpPost(ApiRoutes.Categories.Create)]
@@ -46,7 +56,7 @@ namespace ProjectSetup.Controllers.V1
 
 			if (await _context.Categories.SingleOrDefaultAsync(x => x.Name == category.Name) != null)
 			{
-				return BadRequest("Category name already exists");
+				return BadRequest(_fileService.LogErrorsAndReturnResponse(new ApiResponse(400, "Category with Name: '" + category.Name + "' already exists")));
 			}
 
 			await _context.Categories.AddAsync(category);
@@ -61,7 +71,7 @@ namespace ProjectSetup.Controllers.V1
 			var category = await _context.Categories.FindAsync(categoryId);
 
 			if (category == null)
-				return BadRequest("Category with Id: '" + categoryId + "' doesn't exists");
+				return BadRequest(_fileService.LogErrorsAndReturnResponse(new ApiResponse(400, "Category with Id: '" + categoryId + "' doesn't exists")));
 
 			_context.Categories.Remove(category);
 
@@ -76,7 +86,7 @@ namespace ProjectSetup.Controllers.V1
 			var category = await _context.Categories.SingleOrDefaultAsync(x => x.Name == categoryName);
 
 			if (category == null)
-				return BadRequest("Category with Name: '" + categoryName + "' doesn't exists");
+				return BadRequest(_fileService.LogErrorsAndReturnResponse(new ApiResponse(400, "Category with Name: '" + categoryName + "' doesn't exists")));
 
 			_context.Categories.Remove(category);
 			var deleted = await _context.SaveChangesAsync();

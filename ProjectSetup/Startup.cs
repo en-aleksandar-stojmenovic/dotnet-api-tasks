@@ -6,7 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ProjectSetup.Data;
+using ProjectSetup.Middleware;
 using ProjectSetup.Options;
+using ProjectSetup.Services;
 
 namespace ProjectSetup
 {
@@ -27,6 +29,8 @@ namespace ProjectSetup
 					Configuration.GetConnectionString("DefaultConnection")));
 			services.AddDatabaseDeveloperPageExceptionFilter();
 
+			services.AddScoped<IFileService, FileService>();
+
 			services.AddControllers();
 
 			services.AddSwaggerGen(x =>
@@ -38,26 +42,28 @@ namespace ProjectSetup
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
+			app.UseMiddleware<ExceptionMiddleware>();
+
 			if (env.IsDevelopment())
 			{
-				app.UseDeveloperExceptionPage();
+				var swaggerOptions = new SwaggerOptions();
+				Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
+				app.UseSwagger(option =>
+				{
+					option.RouteTemplate = swaggerOptions.JsonRoute;
+				});
+
+				app.UseSwaggerUI(option =>
+				{
+					option.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description);
+				});
 			}
 			else
 			{
 				app.UseHsts();
 			}
 
-			var swaggerOptions = new SwaggerOptions();
-			Configuration.GetSection(nameof(SwaggerOptions)).Bind(swaggerOptions);
-			app.UseSwagger(option =>
-			{
-				option.RouteTemplate = swaggerOptions.JsonRoute;
-			});
-
-			app.UseSwaggerUI(option =>
-			{
-				option.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description);
-			});
+			app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
