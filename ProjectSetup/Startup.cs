@@ -5,10 +5,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NLog;
 using ProjectSetup.Data;
+using ProjectSetup.Exceptions.ExceptionFilters;
 using ProjectSetup.Middleware;
 using ProjectSetup.Options;
 using ProjectSetup.Services;
+using System;
+using System.IO;
 
 namespace ProjectSetup
 {
@@ -16,6 +20,7 @@ namespace ProjectSetup
 	{
 		public Startup(IConfiguration configuration)
 		{
+			LogManager.LoadConfiguration(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
 			Configuration = configuration;
 		}
 
@@ -27,12 +32,11 @@ namespace ProjectSetup
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
+
 			services.AddDatabaseDeveloperPageExceptionFilter();
-
-			services.AddScoped<IFileService, FileService>();
-
+			services.AddSingleton<ILoggerManager, LoggerManager>();
 			services.AddControllers();
-
+			services.AddScoped<CategoryExceptionFilter>();
 			services.AddSwaggerGen(x =>
 			{
 				x.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
@@ -62,8 +66,6 @@ namespace ProjectSetup
 			{
 				app.UseHsts();
 			}
-
-			app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();

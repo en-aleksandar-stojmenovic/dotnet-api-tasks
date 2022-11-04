@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using ProjectSetup.Contracts.V1.Responses;
+using ProjectSetup.Domain;
 using ProjectSetup.Services;
 using System;
 using System.Net;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ProjectSetup.Middleware
@@ -13,18 +10,15 @@ namespace ProjectSetup.Middleware
 	public class ExceptionMiddleware
 	{
 		private readonly RequestDelegate _next;
-		private readonly ILogger<ExceptionMiddleware> _logger;
-		private readonly IHostEnvironment _env;
-		private IFileService _fileService;
+		private readonly ILoggerManager _logger;
 
-		public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
+		public ExceptionMiddleware(RequestDelegate next, ILoggerManager logger)
 		{
-			_env = env;
 			_logger = logger;
 			_next = next;
 		}
 
-		public async Task InvokeAsync(HttpContext context, IFileService fileService)
+		public async Task InvokeAsync(HttpContext context)
 		{
 			try
 			{
@@ -32,22 +26,21 @@ namespace ProjectSetup.Middleware
 			}
 			catch (Exception ex)
 			{
-				_fileService = fileService;
-				_fileService.LogErrorsInFile(500, ex.Message);
-
-				_logger.LogError(ex, ex.Message);
-				context.Response.ContentType = "application/json";
-				context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-				var response = _env.IsDevelopment()
-					? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString())
-					: new ApiException((int)HttpStatusCode.InternalServerError);
-
-				var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-				var json = JsonSerializer.Serialize(response, options);
-
-				await context.Response.WriteAsync(json);
+				_logger.LogError($"Something went wrong: {ex}");
+				await HandleExceptionAsync(context);
 			}
+		}
+
+		private async Task HandleExceptionAsync(HttpContext context)
+		{
+			context.Response.ContentType = "application/json";
+			context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+			await context.Response.WriteAsync(new ErrorDetails()
+			{
+				StatusCode = context.Response.StatusCode,
+				Message = "Internal Server Error from the custom middleware."
+			}.ToString());
 		}
 	}
 }
