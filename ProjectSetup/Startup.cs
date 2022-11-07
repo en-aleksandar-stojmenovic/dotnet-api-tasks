@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using NLog;
 using ProjectSetup.Data;
 using ProjectSetup.Exceptions.ExceptionFilters;
+using ProjectSetup.Extensions;
 using ProjectSetup.Middleware;
 using ProjectSetup.Options;
 using ProjectSetup.Services;
@@ -36,7 +37,8 @@ namespace ProjectSetup
 			services.AddDatabaseDeveloperPageExceptionFilter();
 			services.AddSingleton<ILoggerManager, LoggerManager>();
 			services.AddControllers();
-			services.AddScoped<CategoryExceptionFilter>();
+			services.AddExceptionFilters();
+
 			services.AddSwaggerGen(x =>
 			{
 				x.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });

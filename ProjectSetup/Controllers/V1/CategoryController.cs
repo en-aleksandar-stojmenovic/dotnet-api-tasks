@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 namespace ProjectSetup.Controllers.V1
 {
 	[ApiController]
-	[ServiceFilter(typeof(CategoryExceptionFilter))]
 	public class CategoryController : ControllerBase
 	{
 		private readonly ApplicationDbContext _context;
@@ -30,6 +29,7 @@ namespace ProjectSetup.Controllers.V1
 		}
 
 		[HttpGet(ApiRoutes.Categories.GetCategory)]
+		[ServiceFilter(typeof(CategoryNotFoundExceptionFilter))]
 		public async Task<ActionResult<Category>> Get([FromRoute] Guid categoryId)
 		{
 			var category = await _context.Categories.FindAsync(categoryId);
@@ -43,6 +43,7 @@ namespace ProjectSetup.Controllers.V1
 		}
 
 		[HttpGet(ApiRoutes.Categories.GetCategoryByName)]
+		[ServiceFilter(typeof(CategoryNotFoundExceptionFilter))]
 		public async Task<ActionResult<Category>> GetCategoryByName([FromRoute] string categoryName)
 		{
 			var category = await _context.Categories.SingleOrDefaultAsync(x => x.Name == categoryName);
@@ -56,6 +57,7 @@ namespace ProjectSetup.Controllers.V1
 		}
 
 		[HttpPost(ApiRoutes.Categories.Create)]
+		[ServiceFilter(typeof(CategoryBadRequestExceptionFilter))]
 		public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
 		{
 			var category = new Category { Id = Guid.NewGuid(), Name = postRequest.Name };
@@ -72,6 +74,7 @@ namespace ProjectSetup.Controllers.V1
 		}
 
 		[HttpDelete(ApiRoutes.Categories.Delete)]
+		[ServiceFilter(typeof(CategoryBadRequestExceptionFilter))]
 		public async Task<IActionResult> DeleteCategoryById([FromRoute] Guid categoryId)
 		{
 			var category = await _context.Categories.FindAsync(categoryId);
@@ -89,6 +92,7 @@ namespace ProjectSetup.Controllers.V1
 		}
 
 		[HttpDelete(ApiRoutes.Categories.DeleteByName)]
+		[ServiceFilter(typeof(CategoryBadRequestExceptionFilter))]
 		public async Task<IActionResult> DeleteCategoryByName([FromRoute] string categoryName)
 		{
 			var category = await _context.Categories.SingleOrDefaultAsync(x => x.Name == categoryName);
