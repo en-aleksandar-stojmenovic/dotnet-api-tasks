@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ProjectSetup.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ProjectSetup.Data
 {
@@ -15,5 +11,6 @@ namespace ProjectSetup.Data
 		}
 
 		public DbSet<Category> Categories { get; set; }
+		public DbSet<Post> Posts { get; set; }
 	}
 }

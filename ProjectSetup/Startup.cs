@@ -6,11 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using NLog;
+using ProjectSetup.Contracts.V1;
 using ProjectSetup.Data;
 using ProjectSetup.Exceptions.ExceptionFilters;
 using ProjectSetup.Extensions;
 using ProjectSetup.Middleware;
 using ProjectSetup.Options;
+using ProjectSetup.Repositories;
 using ProjectSetup.Services;
 using System;
 using System.IO;
@@ -36,6 +38,7 @@ namespace ProjectSetup
 
 			services.AddDatabaseDeveloperPageExceptionFilter();
 			services.AddSingleton<ILoggerManager, LoggerManager>();
+			services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 			services.AddControllers();
 			services.AddExceptionFilters();
 
