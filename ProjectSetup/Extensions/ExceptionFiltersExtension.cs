@@ -13,6 +13,8 @@ namespace ProjectSetup.Extensions
 		{
 			services.AddScoped<CategoryNotFoundExceptionFilter>();
 			services.AddScoped<CategoryBadRequestExceptionFilter>();
+			services.AddScoped<PostNotFoundExceptionFilter>();
+			services.AddScoped<PostBadRequestExceptionFilter>();
 
 			return services;
 		}

@@ -2,9 +2,9 @@
 
 namespace ProjectSetup.Contracts.V1
 {
-	interface IRepositoryWrapper
+	public interface IRepositoryWrapper
 	{
 		IPostRepository Post { get; }
-		Task SaveAsync();
+		Task<int> SaveAsync();
 	}
 }
