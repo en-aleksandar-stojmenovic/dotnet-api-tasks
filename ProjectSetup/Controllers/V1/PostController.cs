@@ -33,14 +33,14 @@ namespace ProjectSetup.Controllers.V1
 		[ServiceFilter(typeof(PostNotFoundExceptionFilter))]
 		public async Task<ActionResult<Post>> Get([FromRoute] Guid postId)
 		{
-			var category = await _repository.Post.FindPostByIdAsync(postId);
+			var post = await _repository.Post.FindPostByIdAsync(postId);
 
-			if (category == null)
+			if (post == null)
 			{
 				throw new PostNotFoundException("Post with Id: '" + postId + "' not found");
 			}
 
-			return Ok(category);
+			return Ok(post);
 		}
 
 		[HttpPost(ApiRoutes.Post.Create)]
@@ -86,9 +86,35 @@ namespace ProjectSetup.Controllers.V1
 		}
 
 		[HttpPut(ApiRoutes.Post.Update)]
-		public async Task<IActionResult> Update([FromBody] UpdatePostRequest post)
+		[ServiceFilter(typeof(PostBadRequestExceptionFilter))]
+		[ServiceFilter(typeof(CategoryBadRequestExceptionFilter))]
+		public async Task<IActionResult> Update([FromBody] UpdatePostRequest postRequest)
 		{
-			throw new NotImplementedException();
+			if (postRequest == null)
+			{
+				throw new PostBadRequestException("Post request cannot be null.");
+			}
+
+			var post = await _repository.Post.FindPostByIdAsync(postRequest.Id);
+
+			if (post == null)
+			{
+				throw new PostBadRequestException("Post with Id: '" + postRequest.Id + "' not found");
+			}
+
+			if (await _context.Categories.FindAsync(postRequest.CategoryId) == null)
+			{
+				throw new CategoryBadRequestException("Category with Id: '" + postRequest.CategoryId + "' not found");
+			}
+
+			post.CategoryId = postRequest.CategoryId;
+			post.Text = postRequest.Text;
+
+			_repository.Post.UpdatePost(post);
+
+			await _repository.SaveAsync();
+
+			return CreatedAtAction(nameof(Get), new { id = post.Id }, post);
 		}
 	}
 }
