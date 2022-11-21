@@ -58,7 +58,7 @@ namespace ProjectSetup.Controllers.V1
 
 		[HttpPost(ApiRoutes.Categories.Create)]
 		[ServiceFilter(typeof(CategoryBadRequestExceptionFilter))]
-		public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
+		public async Task<IActionResult> Create([FromBody] CreateCategoryRequest postRequest)
 		{
 			var category = new Category { Id = Guid.NewGuid(), Name = postRequest.Name };
 
