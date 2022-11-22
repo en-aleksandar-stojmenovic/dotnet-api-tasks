@@ -11,10 +11,10 @@ namespace ProjectSetup.Extensions
 	{
 		public static IServiceCollection AddExceptionFilters(this IServiceCollection services)
 		{
-			services.AddScoped<CategoryNotFoundExceptionFilter>();
-			services.AddScoped<CategoryBadRequestExceptionFilter>();
-			services.AddScoped<PostNotFoundExceptionFilter>();
-			services.AddScoped<PostBadRequestExceptionFilter>();
+			//services.AddScoped<CategoryNotFoundExceptionFilter>();
+			//services.AddScoped<CategoryBadRequestExceptionFilter>();
+			//services.AddScoped<PostNotFoundExceptionFilter>();
+			services.AddScoped<CustomExceptionFilter>();
 
 			return services;
 		}

@@ -5,8 +5,10 @@ using ProjectSetup.Data;
 using ProjectSetup.Domain;
 using ProjectSetup.Exceptions;
 using ProjectSetup.Exceptions.ExceptionFilters;
+using ProjectSetup.Services;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ProjectSetup.Controllers.V1
@@ -16,11 +18,13 @@ namespace ProjectSetup.Controllers.V1
 	{
 		private readonly IRepositoryWrapper _repository;
 		private readonly ApplicationDbContext _context;
+		private readonly ILoggerManager _logger;
 
-		public PostController(IRepositoryWrapper repository, ApplicationDbContext context)
+		public PostController(IRepositoryWrapper repository, ApplicationDbContext context, ILoggerManager logger)
 		{
 			_repository = repository;
 			_context = context;
+			_logger = logger;
 		}
 
 		[HttpGet(ApiRoutes.Post.GetAll)]
@@ -68,7 +72,7 @@ namespace ProjectSetup.Controllers.V1
 		}
 
 		[HttpDelete(ApiRoutes.Post.Delete)]
-		[ServiceFilter(typeof(PostBadRequestExceptionFilter))]
+		//[ServiceFilter(typeof(PostBadRequestExceptionFilter))]
 		public async Task<IActionResult> DeletePostById([FromRoute] Guid postId)
 		{
 			var post = await _repository.Post.FindPostByIdAsync(postId);
@@ -86,31 +90,11 @@ namespace ProjectSetup.Controllers.V1
 		}
 
 		[HttpPut(ApiRoutes.Post.Update)]
-		[ServiceFilter(typeof(PostBadRequestExceptionFilter))]
-		[ServiceFilter(typeof(CategoryBadRequestExceptionFilter))]
+		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
+		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Update([FromBody] UpdatePostRequest postRequest)
 		{
-			if (postRequest == null)
-			{
-				throw new PostBadRequestException("Post request cannot be null.");
-			}
-
-			var post = await _repository.Post.FindPostByIdAsync(postRequest.Id);
-
-			if (post == null)
-			{
-				throw new PostBadRequestException("Post with Id: '" + postRequest.Id + "' not found");
-			}
-
-			if (await _context.Categories.FindAsync(postRequest.CategoryId) == null)
-			{
-				throw new CategoryBadRequestException("Category with Id: '" + postRequest.CategoryId + "' not found");
-			}
-
-			post.CategoryId = postRequest.CategoryId;
-			post.Text = postRequest.Text;
-
-			_repository.Post.UpdatePost(post);
+			var post = _repository.Post.UpdatePost(postRequest);
 
 			await _repository.SaveAsync();
 

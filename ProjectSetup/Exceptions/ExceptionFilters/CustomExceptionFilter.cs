@@ -8,23 +8,24 @@ using System.Threading.Tasks;
 
 namespace ProjectSetup.Exceptions.ExceptionFilters
 {
-	public class CategoryBadRequestExceptionFilter : ExceptionFilterAttribute
+	public class CustomExceptionFilter : ExceptionFilterAttribute
 	{
 		private readonly Type _exceptionType;
 		private readonly HttpStatusCode _statusCode;
+		private readonly ILoggerManager _logger;
 
-		public CategoryBadRequestExceptionFilter(Type exceptionType, HttpStatusCode httpStatusCode)
+		public CustomExceptionFilter(Type exceptionType, HttpStatusCode httpStatusCode)
 		{
 			_exceptionType = exceptionType ?? throw new ArgumentNullException(nameof(exceptionType));
-
 			_statusCode = httpStatusCode;
+			_logger = new LoggerManager();
 		}
 
 		public override async Task OnExceptionAsync(ExceptionContext context)
 		{
 			var exception = context.Exception;
 
-			//_logger.LogError($"Something went wrong: {exception}");
+			_logger.LogError($"Something went wrong: {exception}");
 
 			if (exception.GetType() == _exceptionType)
 			{
