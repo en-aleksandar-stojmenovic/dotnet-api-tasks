@@ -21,6 +21,8 @@ namespace ProjectSetup.Exceptions.ExceptionFilters
 			_logger = new LoggerManager();
 		}
 
+		public CustomExceptionFilter() { }
+
 		public override async Task OnExceptionAsync(ExceptionContext context)
 		{
 			var exception = context.Exception;

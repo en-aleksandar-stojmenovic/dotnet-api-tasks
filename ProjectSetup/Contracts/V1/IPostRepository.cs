@@ -10,8 +10,8 @@ namespace ProjectSetup.Contracts.V1
 	{
 		Task<Post> FindPostByIdAsync(Guid id);
 		Task<IEnumerable<Post>> FindAllPostsAsync();
-		void CreatePost(Post post);
-		Task<Post> UpdatePost(UpdatePostRequest post);
-		void DeletePost(Post post);
+		Task<Post> CreatePost(CreatePostRequest postRequest);
+		Task<Post> UpdatePost(UpdatePostRequest postRequest);
+		void DeletePost(Guid id);
 	}
 }
