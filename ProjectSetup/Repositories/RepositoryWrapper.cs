@@ -4,31 +4,31 @@ using System.Threading.Tasks;
 
 namespace ProjectSetup.Repositories
 {
-	public class RepositoryWrapper : IRepositoryWrapper
-	{
-		private ApplicationDbContext _context;
-		private IPostRepository _postRepo;
+    public class RepositoryWrapper : IRepositoryWrapper
+    {
+        private ApplicationDbContext _context;
+        private IPostRepository _postRepo;
 
-		public RepositoryWrapper(ApplicationDbContext context)
-		{
-			_context = context;
-		}
-		public IPostRepository Post 
-		{
-			get
-			{
-				if(_postRepo == null)
-				{
-					_postRepo = new PostRepository(_context);
-				}
+        public RepositoryWrapper(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        public IPostRepository Post
+        {
+            get
+            {
+                if (_postRepo == null)
+                {
+                    _postRepo = new PostRepository(_context);
+                }
 
-				return _postRepo;
-			}
-		}
+                return _postRepo;
+            }
+        }
 
-		public async Task SaveAsync()
-		{
-			await _context.SaveChangesAsync();
-		}
-	}
+        public async Task<int> SaveAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+    }
 }
