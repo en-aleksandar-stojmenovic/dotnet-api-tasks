@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
 using ProjectSetup.Contracts.V1;
@@ -15,6 +17,7 @@ using ProjectSetup.Options;
 using ProjectSetup.Repositories;
 using ProjectSetup.Services;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +39,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 			   options.UseSqlServer(
 				   builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+	.AddEntityFrameworkStores<ApplicationDbContext>()
+	.AddDefaultTokenProviders();
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddSingleton<ILoggerManager, LoggerManager>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
@@ -43,7 +50,41 @@ builder.Services.AddControllers();
 builder.Services.AddExceptionFilters();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(x =>
+{
+	x.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+
+	var security = new Dictionary<string, IEnumerable<string>>
+	{
+		{ "Bearer", new string[0]}
+	};
+
+	x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+	{
+		Description = "JWT Authorization header using the Bearer scheme.",
+		Name = "Authorization",
+		In = ParameterLocation.Header,
+		Type = SecuritySchemeType.ApiKey
+	});
+	x.AddSecurityRequirement(new OpenApiSecurityRequirement()
+	  {
+		{
+		  new OpenApiSecurityScheme
+		  {
+			Reference = new OpenApiReference
+			  {
+				Type = ReferenceType.SecurityScheme,
+				Id = "Bearer"
+			  },
+			  Scheme = "oauth2",
+			  Name = "Bearer",
+			  In = ParameterLocation.Header,
+
+			},
+			new List<string>()
+		  }
+		});
+});
 
 var app = builder.Build();
 
@@ -72,6 +113,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
