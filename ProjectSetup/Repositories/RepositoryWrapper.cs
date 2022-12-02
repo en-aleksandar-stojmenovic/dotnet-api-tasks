@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using ProjectSetup.Contracts.V1;
 using ProjectSetup.Data;
+using ProjectSetup.Repositories.Interfaces;
 using System.Threading.Tasks;
 
 namespace ProjectSetup.Repositories

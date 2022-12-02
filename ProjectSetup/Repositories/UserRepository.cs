@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ProjectSetup.Contracts;
-using ProjectSetup.Contracts.V1;
 using ProjectSetup.Contracts.V1.Requests;
 using ProjectSetup.Data;
+using ProjectSetup.Domain;
 using ProjectSetup.Exceptions;
+using ProjectSetup.Repositories.Interfaces;
 using System;
 using System.Threading.Tasks;
 
 namespace ProjectSetup.Repositories
 {
-	public class UserRepository : RepositoryBase<IdentityUser>, IUserRepository
+    public class UserRepository : RepositoryBase<IdentityUser>, IUserRepository
 	{
 		private readonly UserManager<IdentityUser> _userManager;
 		private readonly RoleManager<IdentityRole> _roleManager;
