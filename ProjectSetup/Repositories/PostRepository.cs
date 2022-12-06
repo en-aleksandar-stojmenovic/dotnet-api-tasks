@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjectSetup.Contracts.V1;
 using ProjectSetup.Contracts.V1.Requests;
 using ProjectSetup.Data;
 using ProjectSetup.Domain;
 using ProjectSetup.Exceptions;
+using ProjectSetup.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

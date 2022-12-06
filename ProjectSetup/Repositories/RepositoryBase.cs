@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjectSetup.Contracts.V1;
 using ProjectSetup.Data;
+using ProjectSetup.Repositories.Interfaces;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 
 namespace ProjectSetup.Repositories
 {
-	public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
+    public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
 	{
 		protected ApplicationDbContext _context { get; set; }
 
