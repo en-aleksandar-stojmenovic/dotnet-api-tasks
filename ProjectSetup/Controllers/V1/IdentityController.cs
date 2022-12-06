@@ -30,5 +30,12 @@ namespace ProjectSetup.Controllers.V1
 
 			return Ok(user);
 		}
+
+		[HttpPost(ApiRoutes.User.Login)]
+		[CustomExceptionFilter(typeof(UserBadRequestException), HttpStatusCode.Unauthorized)]
+		public async Task<IActionResult> Login([FromBody] LoginUserRequest userRequest)
+		{
+			return Ok(await _repository.User.Login(userRequest));
+		}
 	}
 }

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ProjectSetup.Controllers.V1
 {
-    [ApiController]
+	[ApiController]
     public class PostController : ControllerBase
     {
         private readonly IRepositoryWrapper _repository;
@@ -28,7 +28,7 @@ namespace ProjectSetup.Controllers.V1
             _logger = logger;
         }
 
-        [HttpGet(ApiRoutes.Post.GetAll)]
+		[HttpGet(ApiRoutes.Post.GetAll)]
         public async Task<ActionResult<List<Post>>> Get()
         {
             return Ok(await _repository.Post.FindAllPostsAsync());
