@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProjectSetup.Contracts.V1;
 using ProjectSetup.Contracts.V1.Requests;
 using ProjectSetup.Data;
@@ -41,6 +42,7 @@ namespace ProjectSetup.Controllers.V1
 			return Ok(await _repository.Post.FindPostByIdAsync(postId));
 		}
 
+		[Authorize(Roles = UserRoles.Admin)]
 		[HttpPost(ApiRoutes.Post.Create)]
 		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
@@ -52,6 +54,7 @@ namespace ProjectSetup.Controllers.V1
 			return CreatedAtAction(nameof(Get), new { id = post.Id }, post);
 		}
 
+		[Authorize(Roles = UserRoles.Admin)]
 		[HttpDelete(ApiRoutes.Post.Delete)]
 		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> DeletePostById([FromRoute] Guid postId)
@@ -63,6 +66,7 @@ namespace ProjectSetup.Controllers.V1
 			return Ok(deleted > 0);
 		}
 
+		[Authorize(Roles = UserRoles.Admin)]
 		[HttpPut(ApiRoutes.Post.Update)]
 		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
 		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
