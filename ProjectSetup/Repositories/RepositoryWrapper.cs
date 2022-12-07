@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace ProjectSetup.Repositories
 {
 	public class RepositoryWrapper : IRepositoryWrapper
-    {
-        private ApplicationDbContext _context;
-        private IPostRepository _postRepo;
+	{
+		private ApplicationDbContext _context;
+		private IPostRepository _postRepo;
 		private IUserRepository _userRepo;
 		private readonly UserManager<IdentityUser> _userManager;
 		private readonly RoleManager<IdentityRole> _roleManager;
@@ -17,24 +17,24 @@ namespace ProjectSetup.Repositories
 
 		public RepositoryWrapper(ApplicationDbContext context, UserManager<IdentityUser> userManager,
 			RoleManager<IdentityRole> roleManager, IConfiguration config)
-        {
-            _context = context;
+		{
+			_context = context;
 			_userManager = userManager;
 			_roleManager = roleManager;
 			_config = config;
 		}
-        public IPostRepository Post
-        {
-            get
-            {
-                if (_postRepo == null)
-                {
-                    _postRepo = new PostRepository(_context);
-                }
+		public IPostRepository Post
+		{
+			get
+			{
+				if (_postRepo == null)
+				{
+					_postRepo = new PostRepository(_context);
+				}
 
-                return _postRepo;
-            }
-        }
+				return _postRepo;
+			}
+		}
 
 		public IUserRepository User
 		{
@@ -50,8 +50,8 @@ namespace ProjectSetup.Repositories
 		}
 
 		public async Task<int> SaveAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
-    }
+		{
+			return await _context.SaveChangesAsync();
+		}
+	}
 }

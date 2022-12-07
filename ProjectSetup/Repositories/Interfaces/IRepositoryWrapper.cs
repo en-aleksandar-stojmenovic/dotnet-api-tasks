@@ -3,9 +3,9 @@
 namespace ProjectSetup.Repositories.Interfaces
 {
 	public interface IRepositoryWrapper
-    {
-        IPostRepository Post { get; }
-        IUserRepository User { get; }
-        Task<int> SaveAsync();
-    }
+	{
+		IPostRepository Post { get; }
+		IUserRepository User { get; }
+		Task<int> SaveAsync();
+	}
 }
