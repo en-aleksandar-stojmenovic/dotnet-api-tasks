@@ -27,7 +27,8 @@
 
 		public static class User
 		{
-			public const string Register = Base + "/user";
+			public const string Register = Base + "/user/register";
+			public const string Login = Base + "/user/login";
 		}
 	}
 }

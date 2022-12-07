@@ -33,8 +33,6 @@ builder.Services.Configure<JsonOptions>(options =>
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
 
-builder.Services.AddControllers();
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 			   options.UseSqlServer(
 				   builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -49,22 +47,21 @@ builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddControllers();
 builder.Services.AddExceptionFilters();
 
+builder.Services.AddJwtSettings(builder.Configuration);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>
 {
 	x.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-
-	var security = new Dictionary<string, IEnumerable<string>>
-	{
-		{ "Bearer", new string[0]}
-	};
 
 	x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 	{
 		Description = "JWT Authorization header using the Bearer scheme.",
 		Name = "Authorization",
 		In = ParameterLocation.Header,
-		Type = SecuritySchemeType.ApiKey
+		Type = SecuritySchemeType.ApiKey,
+		BearerFormat = "JWT",
+		Scheme = "Bearer"
 	});
 	x.AddSecurityRequirement(new OpenApiSecurityRequirement()
 	  {
@@ -76,7 +73,7 @@ builder.Services.AddSwaggerGen(x =>
 				Type = ReferenceType.SecurityScheme,
 				Id = "Bearer"
 			  },
-			  Scheme = "oauth2",
+			  Scheme = "Bearer",
 			  Name = "Bearer",
 			  In = ParameterLocation.Header,
 

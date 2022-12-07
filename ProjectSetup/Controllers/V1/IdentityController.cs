@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using ProjectSetup.Exceptions.ExceptionFilters;
-using ProjectSetup.Exceptions;
-using System.Net;
 using ProjectSetup.Contracts.V1;
 using ProjectSetup.Contracts.V1.Requests;
+using ProjectSetup.Exceptions;
+using ProjectSetup.Exceptions.ExceptionFilters;
 using ProjectSetup.Repositories.Interfaces;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace ProjectSetup.Controllers.V1
 {
 	[ApiController]
-	public class IdentityController: ControllerBase
+	public class IdentityController : ControllerBase
 	{
 
 		private readonly IRepositoryWrapper _repository;
@@ -29,6 +29,13 @@ namespace ProjectSetup.Controllers.V1
 			await _repository.SaveAsync();
 
 			return Ok(user);
+		}
+
+		[HttpPost(ApiRoutes.User.Login)]
+		[CustomExceptionFilter(typeof(UserBadRequestException), HttpStatusCode.Unauthorized)]
+		public async Task<IActionResult> Login([FromBody] LoginUserRequest userRequest)
+		{
+			return Ok(await _repository.User.Login(userRequest));
 		}
 	}
 }
