@@ -45,6 +45,7 @@ namespace ProjectSetup.Controllers.V1
 		[Authorize(Roles = UserRoles.Admin)]
 		[HttpPost(ApiRoutes.Post.Create)]
 		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
+		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
 		{
 			var post = await _repository.Post.CreatePost(postRequest);

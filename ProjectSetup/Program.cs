@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +20,7 @@ using ProjectSetup.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +46,15 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddSingleton<ILoggerManager, LoggerManager>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+	.AddFluentValidation(options =>
+	{
+		options.ImplicitlyValidateChildProperties = true;
+		options.ImplicitlyValidateRootCollectionElements = true;
+
+		options.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+	});
+
 builder.Services.AddExceptionFilters();
 
 builder.Services.AddJwtSettings(builder.Configuration);

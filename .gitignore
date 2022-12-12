@@ -454,3 +454,4 @@ $RECYCLE.BIN/
 !.vscode/extensions.json
 *logfile.txt
 *log.txt
+/ProjectSetup/appsettings.Development.json
