@@ -45,8 +45,14 @@ namespace ProjectSetup.Controllers.V1
 		[Authorize(Roles = UserRoles.Admin)]
 		[HttpPost(ApiRoutes.Post.Create)]
 		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
+		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
 		{
+			if (!ModelState.IsValid)
+			{
+				throw new PostBadRequestException(ModelState.ValidationState.ToString());
+			}
+
 			var post = await _repository.Post.CreatePost(postRequest);
 
 			await _repository.SaveAsync();
