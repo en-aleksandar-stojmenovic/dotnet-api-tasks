@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectSetup.Contracts.V1;
 using ProjectSetup.Contracts.V1.Requests;
@@ -6,6 +7,7 @@ using ProjectSetup.Data;
 using ProjectSetup.Domain;
 using ProjectSetup.Exceptions;
 using ProjectSetup.Exceptions.ExceptionFilters;
+using ProjectSetup.Extensions;
 using ProjectSetup.Repositories.Interfaces;
 using ProjectSetup.Services;
 using System;
@@ -21,12 +23,14 @@ namespace ProjectSetup.Controllers.V1
 		private readonly IRepositoryWrapper _repository;
 		private readonly ApplicationDbContext _context;
 		private readonly ILoggerManager _logger;
+		private readonly IMapper _mapper;
 
-		public PostController(IRepositoryWrapper repository, ApplicationDbContext context, ILoggerManager logger)
+		public PostController(IRepositoryWrapper repository, ApplicationDbContext context, ILoggerManager logger, IMapper mapper)
 		{
 			_repository = repository;
 			_context = context;
 			_logger = logger;
+			_mapper = mapper;
 		}
 
 		[HttpGet(ApiRoutes.Post.GetAll)]
@@ -48,7 +52,11 @@ namespace ProjectSetup.Controllers.V1
 		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
 		{
-			var post = await _repository.Post.CreatePost(postRequest);
+			Post mappedPost = _mapper.Map<Post>(postRequest);
+
+			mappedPost.CreatedBy = Guid.Parse(HttpContext.GetUserId());
+
+			var post = await _repository.Post.CreatePost(mappedPost);
 
 			await _repository.SaveAsync();
 

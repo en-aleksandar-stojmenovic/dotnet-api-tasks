@@ -10,7 +10,7 @@ namespace ProjectSetup.Repositories.Interfaces
 	{
 		Task<Post> FindPostByIdAsync(Guid id);
 		Task<IEnumerable<Post>> FindAllPostsAsync();
-		Task<Post> CreatePost(CreatePostRequest postRequest);
+		Task<Post> CreatePost(Post postRequest);
 		Task<Post> UpdatePost(UpdatePostRequest postRequest);
 		void DeletePost(Guid id);
 	}

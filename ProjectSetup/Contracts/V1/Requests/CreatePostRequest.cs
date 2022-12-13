@@ -6,6 +6,5 @@ namespace ProjectSetup.Contracts.V1.Requests
 	{
 		public string Text { get; set; }
 		public Guid CategoryId { get; set; }
-		public Guid CreatedById { get; set; }
 	}
 }
