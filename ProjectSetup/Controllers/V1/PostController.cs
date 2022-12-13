@@ -52,9 +52,9 @@ namespace ProjectSetup.Controllers.V1
 		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
 		{
-			Post mappedPost = _mapper.Map<Post>(postRequest);
+			var mappedPost = _mapper.Map<Post>(postRequest);
 
-			mappedPost.CreatedBy = Guid.Parse(HttpContext.GetUserId());
+			mappedPost.CreatedBy = HttpContext.GetUserId();
 
 			var post = await _repository.Post.CreatePost(mappedPost);
 

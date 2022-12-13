@@ -1,18 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Linq;
 
 namespace ProjectSetup.Extensions
 {
 	public static class GeneralExtensions
 	{
-		public static string GetUserId(this HttpContext httpContext)
+		public static Guid GetUserId(this HttpContext httpContext)
 		{
 			if (httpContext.User == null)
 			{
-				return string.Empty;
+				return Guid.Empty;
 			}
 
-			return httpContext.User.Claims.Single(x => x.Type == "id").Value;
+			return Guid.Parse(httpContext.User.Claims.Single(x => x.Type == "id").Value);
 		}
 	}
 }
