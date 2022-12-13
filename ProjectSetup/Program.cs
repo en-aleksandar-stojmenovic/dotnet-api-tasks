@@ -46,6 +46,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddSingleton<ILoggerManager, LoggerManager>();
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddControllers()
 	.AddFluentValidation(options =>
 	{

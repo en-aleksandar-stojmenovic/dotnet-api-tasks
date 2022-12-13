@@ -77,6 +77,7 @@ namespace ProjectSetup.Repositories
 				var authClaims = new List<Claim>
 				{
 					new Claim(ClaimTypes.Name, user.UserName),
+					new Claim("id", user.Id)
 				};
 
 				foreach (var userRole in userRoles)

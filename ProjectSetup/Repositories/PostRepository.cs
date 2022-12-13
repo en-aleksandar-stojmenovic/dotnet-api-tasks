@@ -10,20 +10,20 @@ using System.Threading.Tasks;
 
 namespace ProjectSetup.Repositories
 {
-    public class PostRepository : RepositoryBase<Post>, IPostRepository
-    {
-        public PostRepository(ApplicationDbContext context)
-            : base(context)
-        {
-        }
+	public class PostRepository : RepositoryBase<Post>, IPostRepository
+	{
+		public PostRepository(ApplicationDbContext context)
+			: base(context)
+		{
+		}
 
-        public async Task<IEnumerable<Post>> FindAllPostsAsync()
-        {
-            return await FindAll().ToListAsync();
-        }
+		public async Task<IEnumerable<Post>> FindAllPostsAsync()
+		{
+			return await FindAll().ToListAsync();
+		}
 
-        public async Task<Post> FindPostByIdAsync(Guid id)
-        {
+		public async Task<Post> FindPostByIdAsync(Guid id)
+		{
 			var post = await FindByCondition(post => post.Id.Equals(id))
 						.FirstOrDefaultAsync();
 
@@ -33,31 +33,25 @@ namespace ProjectSetup.Repositories
 			}
 
 			return post;
-        }
+		}
 
-        public async Task<Post> CreatePost(CreatePostRequest postRequest)
-        {
-			if (await _context.Categories.FindAsync(postRequest.CategoryId) == null)
+		public async Task<Post> CreatePost(Post post)
+		{
+			if (await _context.Categories.FindAsync(post.CategoryId) == null)
 			{
-				throw new CategoryBadRequestException("Category with Id: '" + postRequest.CategoryId + "' not found");
+				throw new CategoryBadRequestException("Category with Id: '" + post.CategoryId + "' not found");
 			}
 
-			var post = new Post
-			{
-				Id = Guid.NewGuid(),
-				Text = postRequest.Text,
-				Created = DateTime.Now,
-				CategoryId = postRequest.CategoryId,
-				CreatedBy = postRequest.CreatedById
-			};
+			post.Id = Guid.NewGuid();
+			post.Created = DateTime.Now;
 
 			Create(post);
 
 			return post;
-        }
+		}
 
-        public async Task<Post> UpdatePost(UpdatePostRequest postRequest)
-        {
+		public async Task<Post> UpdatePost(UpdatePostRequest postRequest)
+		{
 			Post post = await FindByCondition(post => post.Id.Equals(postRequest.Id))
 						.FirstOrDefaultAsync();
 
@@ -77,9 +71,9 @@ namespace ProjectSetup.Repositories
 			Update(post);
 
 			return post;
-        }
+		}
 		public void DeletePost(Guid postId)
-        {
+		{
 			var post = FindByCondition(post => post.Id.Equals(postId))
 						.FirstOrDefaultAsync().Result;
 
@@ -89,6 +83,6 @@ namespace ProjectSetup.Repositories
 			}
 
 			Delete(post);
-        }
-    }
+		}
+	}
 }
