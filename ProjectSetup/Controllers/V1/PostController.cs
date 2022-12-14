@@ -81,6 +81,13 @@ namespace ProjectSetup.Controllers.V1
 		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Update([FromBody] UpdatePostRequest postRequest)
 		{
+			var userOwnsPost = await _repository.Post.UserOwnsPostAsync(postRequest.Id, HttpContext.GetUserId());
+
+			if (!userOwnsPost)
+			{
+				throw new PostBadRequestException("You don't own this post");
+			}
+
 			var post = await _repository.Post.UpdatePost(postRequest);
 
 			await _repository.SaveAsync();
