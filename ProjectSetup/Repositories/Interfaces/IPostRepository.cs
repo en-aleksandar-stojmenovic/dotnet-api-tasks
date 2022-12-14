@@ -13,5 +13,6 @@ namespace ProjectSetup.Repositories.Interfaces
 		Task<Post> CreatePost(Post postRequest);
 		Task<Post> UpdatePost(UpdatePostRequest postRequest);
 		void DeletePost(Guid id);
+		Task<bool> UserOwnsPostAsync(Guid id, Guid userId);
 	}
 }

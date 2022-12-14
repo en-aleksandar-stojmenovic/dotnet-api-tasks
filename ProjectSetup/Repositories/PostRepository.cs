@@ -84,5 +84,22 @@ namespace ProjectSetup.Repositories
 
 			Delete(post);
 		}
+
+		public async Task<bool> UserOwnsPostAsync(Guid id, Guid userId)
+		{
+			var post = await _context.Posts.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+
+			if (post == null)
+			{
+				return false;
+			}
+
+			if (post.CreatedBy != userId)
+			{
+				return false;
+			}
+
+			return true;
+		}
 	}
 }
