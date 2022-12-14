@@ -85,9 +85,9 @@ namespace ProjectSetup.Repositories
 			Delete(post);
 		}
 
-		public async Task<bool> UserOwnsPostAsync(Guid id, Guid userId)
+		public async Task<bool> UserOwnsPostAsync(Guid postId, Guid userId)
 		{
-			var post = await _context.Posts.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+			var post = await _context.Posts.AsNoTracking().SingleOrDefaultAsync(x => x.Id == postId);
 
 			if (post == null)
 			{
