@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjectSetup.Contracts.V1.Requests;
 using ProjectSetup.Data;
 using ProjectSetup.Domain;
 using ProjectSetup.Exceptions;
@@ -50,12 +49,9 @@ namespace ProjectSetup.Repositories
 			return post;
 		}
 
-		public async Task<Post> UpdatePost(UpdatePostRequest postRequest)
+		public async Task<Post> UpdatePost(Post postRequest)
 		{
-			Post post = await FindByCondition(post => post.Id.Equals(postRequest.Id))
-						.FirstOrDefaultAsync();
-
-			if (post == null)
+			if (postRequest == null)
 			{
 				throw new PostBadRequestException("Post with Id: '" + postRequest.Id + "' not found");
 			}
@@ -65,12 +61,9 @@ namespace ProjectSetup.Repositories
 				throw new CategoryBadRequestException("Category with Id: '" + postRequest.CategoryId + "' not found");
 			}
 
-			post.CategoryId = postRequest.CategoryId;
-			post.Text = postRequest.Text;
+			Update(postRequest);
 
-			Update(post);
-
-			return post;
+			return postRequest;
 		}
 		public void DeletePost(Guid postId)
 		{

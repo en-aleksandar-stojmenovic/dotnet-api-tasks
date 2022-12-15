@@ -9,6 +9,7 @@ namespace ProjectSetup.Profiles
 		public PostProfile()
 		{
 			CreateMap<CreatePostRequest, Post>();
+			CreateMap<UpdatePostRequest, Post>();
 		}
 	}
 }
