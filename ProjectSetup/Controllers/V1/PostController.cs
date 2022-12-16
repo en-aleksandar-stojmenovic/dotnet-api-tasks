@@ -77,22 +77,26 @@ namespace ProjectSetup.Controllers.V1
 
 		[Authorize(Roles = UserRoles.Admin)]
 		[HttpPut(ApiRoutes.Post.Update)]
-		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
+		[CustomExceptionFilter(typeof(PostNotFoundException), HttpStatusCode.NotFound)]
 		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
-		public async Task<IActionResult> Update([FromBody] UpdatePostRequest postRequest)
+		public async Task<IActionResult> Update([FromBody] UpdatePostRequest updateRequest)
 		{
-			var userOwnsPost = await _repository.Post.UserOwnsPostAsync(postRequest.Id, HttpContext.GetUserId());
+			var userOwnsPost = await _repository.Post.UserOwnsPostAsync(updateRequest.Id, HttpContext.GetUserId());
 
 			if (!userOwnsPost)
 			{
-				throw new PostBadRequestException("You don't own this post");
+				return BadRequest("You don't own this post");
 			}
 
-			var post = await _repository.Post.UpdatePost(postRequest);
+			var post = await _repository.Post.FindPostByIdAsync(updateRequest.Id);
+
+			var mappedPost = _mapper.Map(updateRequest, post);
+
+			var updatedPost = await _repository.Post.UpdatePost(mappedPost);
 
 			await _repository.SaveAsync();
 
-			return CreatedAtAction(nameof(Get), new { id = post.Id }, post);
+			return CreatedAtAction(nameof(Get), new { id = updatedPost.Id }, updatedPost);
 		}
 	}
 }
