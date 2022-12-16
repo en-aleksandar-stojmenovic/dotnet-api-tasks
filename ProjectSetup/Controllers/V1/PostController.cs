@@ -77,7 +77,7 @@ namespace ProjectSetup.Controllers.V1
 
 		[Authorize(Roles = UserRoles.Admin)]
 		[HttpPut(ApiRoutes.Post.Update)]
-		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
+		[CustomExceptionFilter(typeof(PostNotFoundException), HttpStatusCode.NotFound)]
 		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Update([FromBody] UpdatePostRequest updateRequest)
 		{
@@ -85,7 +85,7 @@ namespace ProjectSetup.Controllers.V1
 
 			if (!userOwnsPost)
 			{
-				throw new PostBadRequestException("You don't own this post");
+				return BadRequest(new ErrorDetails { StatusCode = 400, Message = "You don't own this post" });
 			}
 
 			var post = await _repository.Post.FindPostByIdAsync(updateRequest.Id);

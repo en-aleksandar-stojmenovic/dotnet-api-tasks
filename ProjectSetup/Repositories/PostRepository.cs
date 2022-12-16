@@ -51,11 +51,6 @@ namespace ProjectSetup.Repositories
 
 		public async Task<Post> UpdatePost(Post postRequest)
 		{
-			if (postRequest == null)
-			{
-				throw new PostBadRequestException("Post with Id: '" + postRequest.Id + "' not found");
-			}
-
 			if (await _context.Categories.FindAsync(postRequest.CategoryId) == null)
 			{
 				throw new CategoryBadRequestException("Category with Id: '" + postRequest.CategoryId + "' not found");
