@@ -85,7 +85,7 @@ namespace ProjectSetup.Controllers.V1
 
 			if (!userOwnsPost)
 			{
-				return BadRequest(new ErrorDetails { StatusCode = 400, Message = "You don't own this post" });
+				return BadRequest("You don't own this post");
 			}
 
 			var post = await _repository.Post.FindPostByIdAsync(updateRequest.Id);
