@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
-using FluentValidation.TestHelper;
+﻿using FluentValidation.TestHelper;
 using ProjectSetup.Contracts.V1.Requests;
 using ProjectSetup.Validation;
+using Tests.Helpers;
 
 namespace Tests.Validation
 {
@@ -21,7 +21,8 @@ namespace Tests.Validation
 
 			var result = _createPostValidator.TestValidate(createPostRequest);
 
-			result.Errors.First().ErrorCode.Should().Be("NotEmptyValidator");
+			result.ShouldHaveValidationErrorFor(x => x.Text);
+			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
 		}
 
 		[Fact]
@@ -31,36 +32,30 @@ namespace Tests.Validation
 
 			var result = _createPostValidator.TestValidate(createPostRequest);
 
-			result.Errors.First().ErrorCode.Should().Be("NotEmptyValidator");
+			result.ShouldNotHaveValidationErrorFor(x => x.Text);
+			result.ShouldHaveValidationErrorFor(x => x.CategoryId);
 		}
 
 		[Fact]
 		public void ValidateTextIsMoreThan400Characters()
 		{
-			var createPostRequest = new CreatePostRequest { Text = GetRandomString(401), CategoryId = Guid.NewGuid() };
+			var createPostRequest = new CreatePostRequest { Text = StringHelpers.GetRandomString(401), CategoryId = Guid.NewGuid() };
 
 			var result = _createPostValidator.TestValidate(createPostRequest);
 
-			result.Errors.First().ErrorMessage.Should().Be("Text must be between 1 and 400 characters.");
+			result.ShouldHaveValidationErrorFor(x => x.Text);
+			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
 		}
 
-		private string GetRandomString(int length)
+		[Fact]
+		public void ValidateCreatePostRequestIsValid()
 		{
-			Random rand = new Random();
-			int randValue;
-			string str = "";
-			char letter;
+			var createPostRequest = new CreatePostRequest { Text = "Some text", CategoryId = Guid.NewGuid() };
 
-			for (int i = 0; i < length; i++)
-			{
-				randValue = rand.Next(0, 26);
+			var result = _createPostValidator.TestValidate(createPostRequest);
 
-				letter = Convert.ToChar(randValue + 65);
-
-				str = str + letter;
-			}
-
-			return str;
+			result.ShouldNotHaveValidationErrorFor(x => x.Text);
+			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
 		}
 	}
 }
