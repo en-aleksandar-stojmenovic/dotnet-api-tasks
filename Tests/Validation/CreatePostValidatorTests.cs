@@ -54,8 +54,7 @@ namespace Tests.Validation
 
 			var result = _createPostValidator.TestValidate(createPostRequest);
 
-			result.ShouldNotHaveValidationErrorFor(x => x.Text);
-			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
+			result.ShouldNotHaveAnyValidationErrors();
 		}
 	}
 }
