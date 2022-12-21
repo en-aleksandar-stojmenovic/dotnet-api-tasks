@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectSetup.Contracts.V1;
 using ProjectSetup.Contracts.V1.Requests;
-using ProjectSetup.Data;
 using ProjectSetup.Domain;
 using ProjectSetup.Exceptions;
 using ProjectSetup.Exceptions.ExceptionFilters;
 using ProjectSetup.Extensions;
 using ProjectSetup.Repositories.Interfaces;
-using ProjectSetup.Services;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -21,15 +19,11 @@ namespace ProjectSetup.Controllers.V1
 	public class PostController : ControllerBase
 	{
 		private readonly IRepositoryWrapper _repository;
-		private readonly ApplicationDbContext _context;
-		private readonly ILoggerManager _logger;
 		private readonly IMapper _mapper;
 
-		public PostController(IRepositoryWrapper repository, ApplicationDbContext context, ILoggerManager logger, IMapper mapper)
+		public PostController(IRepositoryWrapper repository, IMapper mapper)
 		{
 			_repository = repository;
-			_context = context;
-			_logger = logger;
 			_mapper = mapper;
 		}
 
