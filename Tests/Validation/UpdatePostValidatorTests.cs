@@ -17,10 +17,11 @@ namespace Tests.Validation
 		[Fact]
 		public void ValidateTextIsEmpty()
 		{
-			var createPostRequest = new UpdatePostRequest { Text = "", CategoryId = Guid.NewGuid() };
+			var updatePostRequest = new UpdatePostRequest { Id = Guid.NewGuid(), Text = "", CategoryId = Guid.NewGuid() };
 
-			var result = _updatePostValidator.TestValidate(createPostRequest);
+			var result = _updatePostValidator.TestValidate(updatePostRequest);
 
+			result.ShouldNotHaveValidationErrorFor(x => x.Id);
 			result.ShouldHaveValidationErrorFor(x => x.Text);
 			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
 		}
@@ -28,10 +29,11 @@ namespace Tests.Validation
 		[Fact]
 		public void ValidateTextHasWhiteSpaces()
 		{
-			var createPostRequest = new UpdatePostRequest { Text = "     ", CategoryId = Guid.NewGuid() };
+			var updatePostRequest = new UpdatePostRequest { Id = Guid.NewGuid(), Text = "     ", CategoryId = Guid.NewGuid() };
 
-			var result = _updatePostValidator.TestValidate(createPostRequest);
+			var result = _updatePostValidator.TestValidate(updatePostRequest);
 
+			result.ShouldNotHaveValidationErrorFor(x => x.Id);
 			result.ShouldHaveValidationErrorFor(x => x.Text);
 			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
 		}
@@ -39,10 +41,11 @@ namespace Tests.Validation
 		[Fact]
 		public void ValidateTextIsNull()
 		{
-			var createPostRequest = new UpdatePostRequest { Text = null, CategoryId = Guid.NewGuid() };
+			var updatePostRequest = new UpdatePostRequest { Id = Guid.NewGuid(), Text = null, CategoryId = Guid.NewGuid() };
 
-			var result = _updatePostValidator.TestValidate(createPostRequest);
+			var result = _updatePostValidator.TestValidate(updatePostRequest);
 
+			result.ShouldNotHaveValidationErrorFor(x => x.Id);
 			result.ShouldHaveValidationErrorFor(x => x.Text);
 			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
 		}
@@ -50,21 +53,35 @@ namespace Tests.Validation
 		[Fact]
 		public void ValidateCategoryIdIsEmpty()
 		{
-			var createPostRequest = new UpdatePostRequest { Text = "Some text", CategoryId = Guid.Empty };
+			var updatePostRequest = new UpdatePostRequest { Id = Guid.NewGuid(), Text = "Some text", CategoryId = Guid.Empty };
 
-			var result = _updatePostValidator.TestValidate(createPostRequest);
+			var result = _updatePostValidator.TestValidate(updatePostRequest);
 
+			result.ShouldNotHaveValidationErrorFor(x => x.Id);
 			result.ShouldNotHaveValidationErrorFor(x => x.Text);
 			result.ShouldHaveValidationErrorFor(x => x.CategoryId);
 		}
 
 		[Fact]
+		public void ValidatePostIdIsEmpty()
+		{
+			var updatePostRequest = new UpdatePostRequest { Id = Guid.Empty, Text = "Some text", CategoryId = Guid.NewGuid() };
+
+			var result = _updatePostValidator.TestValidate(updatePostRequest);
+
+			result.ShouldHaveValidationErrorFor(x => x.Id);
+			result.ShouldNotHaveValidationErrorFor(x => x.Text);
+			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
+		}
+
+		[Fact]
 		public void ValidateTextIsMoreThan400Characters()
 		{
-			var createPostRequest = new UpdatePostRequest { Text = StringHelpers.GetRandomString(401), CategoryId = Guid.NewGuid() };
+			var updatePostRequest = new UpdatePostRequest { Id = Guid.NewGuid(), Text = StringHelpers.GetRandomString(401), CategoryId = Guid.NewGuid() };
 
-			var result = _updatePostValidator.TestValidate(createPostRequest);
+			var result = _updatePostValidator.TestValidate(updatePostRequest);
 
+			result.ShouldNotHaveValidationErrorFor(x => x.Id);
 			result.ShouldHaveValidationErrorFor(x => x.Text);
 			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
 		}
@@ -72,9 +89,9 @@ namespace Tests.Validation
 		[Fact]
 		public void ValidateCreatePostRequestIsValid()
 		{
-			var createPostRequest = new UpdatePostRequest { Text = "Some text", CategoryId = Guid.NewGuid() };
+			var updatePostRequest = new UpdatePostRequest { Id = Guid.NewGuid(), Text = "Some text", CategoryId = Guid.NewGuid() };
 
-			var result = _updatePostValidator.TestValidate(createPostRequest);
+			var result = _updatePostValidator.TestValidate(updatePostRequest);
 
 			result.ShouldNotHaveAnyValidationErrors();
 		}
