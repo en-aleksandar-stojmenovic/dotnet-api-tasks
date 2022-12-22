@@ -26,6 +26,28 @@ namespace Tests.Validation
 		}
 
 		[Fact]
+		public void ValidateTextHasWhiteSpaces()
+		{
+			var createPostRequest = new CreatePostRequest { Text = "     ", CategoryId = Guid.NewGuid() };
+
+			var result = _createPostValidator.TestValidate(createPostRequest);
+
+			result.ShouldHaveValidationErrorFor(x => x.Text);
+			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
+		}
+
+		[Fact]
+		public void ValidateTextIsNull()
+		{
+			var createPostRequest = new CreatePostRequest { Text = null, CategoryId = Guid.NewGuid() };
+
+			var result = _createPostValidator.TestValidate(createPostRequest);
+
+			result.ShouldHaveValidationErrorFor(x => x.Text);
+			result.ShouldNotHaveValidationErrorFor(x => x.CategoryId);
+		}
+
+		[Fact]
 		public void ValidateCategoryIdIsEmpty()
 		{
 			var createPostRequest = new CreatePostRequest { Text = "Some text", CategoryId = Guid.Empty };
