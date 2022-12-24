@@ -10,6 +10,7 @@ namespace ProjectSetup.Repositories
 	{
 		private ApplicationDbContext _context;
 		private IPostRepository _postRepo;
+		private IFastPostRepository _fastPostRepo;
 		private IUserRepository _userRepo;
 		private readonly UserManager<IdentityUser> _userManager;
 		private readonly RoleManager<IdentityRole> _roleManager;
@@ -23,6 +24,7 @@ namespace ProjectSetup.Repositories
 			_roleManager = roleManager;
 			_config = config;
 		}
+
 		public IPostRepository Post
 		{
 			get
@@ -33,6 +35,19 @@ namespace ProjectSetup.Repositories
 				}
 
 				return _postRepo;
+			}
+		}
+
+		public IFastPostRepository FastPost
+		{
+			get
+			{
+				if (_fastPostRepo == null)
+				{
+					_fastPostRepo = new FastPostRepository(_context);
+				}
+
+				return _fastPostRepo;
 			}
 		}
 

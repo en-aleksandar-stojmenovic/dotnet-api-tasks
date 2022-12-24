@@ -25,6 +25,14 @@
 			public const string Delete = Base + "/posts/{postId}";
 		}
 
+		public static class FastPost
+		{
+			public const string GetAll = Base + "/fastposts";
+			public const string GetPost = Base + "/fastposts/{postId}";
+			public const string Create = Base + "/fastposts";
+			public const string Delete = Base + "/fastposts/{postId}";
+		}
+
 		public static class User
 		{
 			public const string Register = Base + "/user/register";
