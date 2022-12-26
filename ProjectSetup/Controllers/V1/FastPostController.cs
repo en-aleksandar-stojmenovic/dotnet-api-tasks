@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjectSetup.Commands;
 using ProjectSetup.Contracts.V1;
+using ProjectSetup.Domain;
 using ProjectSetup.Exceptions;
 using ProjectSetup.Exceptions.ExceptionFilters;
+using ProjectSetup.Queries;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -24,6 +27,17 @@ namespace ProjectSetup.Controllers.V1
 		public async Task<IActionResult> Create([FromBody] CreateFastPostCommand command)
 		{
 			var result = await _mediator.Send(command);
+
+			return Ok(result);
+		}
+
+		[HttpGet(ApiRoutes.FastPost.GetPost)]
+		[CustomExceptionFilter(typeof(FastPostNotFoundException), HttpStatusCode.NotFound)]
+		public async Task<ActionResult<FastPost>> ReadFastPost([FromRoute] Guid postId)
+		{
+			var query = new GetFastPostByIdQuery(postId);
+
+			var result = await _mediator.Send(query);
 
 			return Ok(result);
 		}

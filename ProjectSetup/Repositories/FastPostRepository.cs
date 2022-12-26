@@ -1,4 +1,5 @@
-﻿using ProjectSetup.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectSetup.Data;
 using ProjectSetup.Domain;
 using ProjectSetup.Exceptions;
 using ProjectSetup.Repositories.Interfaces;
@@ -26,6 +27,19 @@ namespace ProjectSetup.Repositories
 			Create(postRequest);
 
 			return postRequest;
+		}
+
+		public async Task<FastPost> FindFastPostByIdAsync(Guid id)
+		{
+			var fastPost = await FindByCondition(fastPost => fastPost.Id.Equals(id) && EF.Functions.DateDiffHour(fastPost.Created, DateTime.Now) < 24)
+						.FirstOrDefaultAsync();
+
+			if (fastPost == null)
+			{
+				throw new FastPostNotFoundException("FastPost with Id: '" + id + "' not found");
+			}
+
+			return fastPost;
 		}
 	}
 }
