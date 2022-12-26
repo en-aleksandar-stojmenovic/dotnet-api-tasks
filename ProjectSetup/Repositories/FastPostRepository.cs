@@ -31,7 +31,7 @@ namespace ProjectSetup.Repositories
 
 		public async Task<FastPost> FindFastPostByIdAsync(Guid id)
 		{
-			var fastPost = await FindByCondition(fastPost => fastPost.Id.Equals(id))
+			var fastPost = await FindByCondition(fastPost => fastPost.Id.Equals(id) && EF.Functions.DateDiffHour(fastPost.Created, DateTime.Now) < 24)
 						.FirstOrDefaultAsync();
 
 			if (fastPost == null)
