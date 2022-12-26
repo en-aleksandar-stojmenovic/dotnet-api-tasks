@@ -12,7 +12,6 @@ namespace ProjectSetup.Handlers
 {
 	public class CreateFastPostHandler : IRequestHandler<CreateFastPostCommand, FastPost>
 	{
-
 		private readonly IRepositoryWrapper _repository;
 		private readonly IMapper _mapper;
 		private readonly IHttpContextAccessor _httpContextAccessor;
