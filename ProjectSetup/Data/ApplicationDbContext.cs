@@ -19,5 +19,6 @@ namespace ProjectSetup.Data
 
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Post> Posts { get; set; }
+		public DbSet<FastPost> FastPosts { get; set; }
 	}
 }
