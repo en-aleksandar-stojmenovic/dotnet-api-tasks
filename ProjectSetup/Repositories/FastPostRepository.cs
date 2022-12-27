@@ -4,6 +4,7 @@ using ProjectSetup.Domain;
 using ProjectSetup.Exceptions;
 using ProjectSetup.Repositories.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ProjectSetup.Repositories
@@ -27,6 +28,18 @@ namespace ProjectSetup.Repositories
 			Create(postRequest);
 
 			return postRequest;
+		}
+
+		public async Task<List<FastPost>> FindAllFastPostsAsync()
+		{
+			var fastPosts = await FindByCondition(fastPost => EF.Functions.DateDiffHour(fastPost.Created, DateTime.Now) < 24).ToListAsync();
+
+			if (fastPosts.Count == 0)
+			{
+				throw new FastPostNotFoundException("FastPosts are no longer available");
+			}
+
+			return fastPosts;
 		}
 
 		public async Task<FastPost> FindFastPostByIdAsync(Guid id)
