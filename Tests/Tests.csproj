@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProjectSetup\ProjectSetup.csproj" />
+    <ProjectReference Include="..\Twitter\Twitter.csproj" />
   </ItemGroup>
 
 </Project>

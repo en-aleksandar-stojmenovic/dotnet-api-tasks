@@ -1,7 +1,4 @@
-﻿using FluentValidation.TestHelper;
-using ProjectSetup.Contracts.V1.Requests;
-using ProjectSetup.Validation;
-using Tests.Helpers;
+﻿using Tests.Helpers;
 
 namespace Tests.Validation
 {
