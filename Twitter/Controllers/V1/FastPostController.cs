@@ -44,7 +44,6 @@ namespace Twitter.Controllers.V1
 		}
 
 		[HttpGet(ApiRoutes.FastPost.GetAll)]
-		[CustomExceptionFilter(typeof(PostNotFoundException), HttpStatusCode.NotFound)]
 		public async Task<ActionResult<List<FastPost>>> ReadAllFastPosts()
 		{
 			var query = new GetAllFastPostsQuery();

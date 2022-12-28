@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Twitter.Data;
 using Twitter.Domain;
 using Twitter.Exceptions;
 using Twitter.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Twitter.Repositories
 {
@@ -33,11 +33,6 @@ namespace Twitter.Repositories
 		public async Task<List<FastPost>> FindAllFastPostsAsync()
 		{
 			var fastPosts = await FindByCondition(fastPost => EF.Functions.DateDiffHour(fastPost.Created, DateTime.Now) < 24).ToListAsync();
-
-			if (fastPosts.Count == 0)
-			{
-				throw new FastPostNotFoundException("FastPosts are no longer available");
-			}
 
 			return fastPosts;
 		}
