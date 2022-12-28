@@ -52,5 +52,16 @@ namespace Twitter.Controllers.V1
 
 			return Ok(result);
 		}
+
+		[HttpDelete(ApiRoutes.FastPost.Delete)]
+		[CustomExceptionFilter(typeof(FastPostNotFoundException), HttpStatusCode.NotFound)]
+		public async Task<ActionResult> DeleteFastPost([FromRoute] Guid postId)
+		{
+			var query = new DeleteFastPostByIdQuery(postId);
+
+			var result = await _mediator.Send(query);
+
+			return Ok(result);
+		}
 	}
 }
