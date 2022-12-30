@@ -1,5 +1,6 @@
 using FluentValidation.AspNetCore;
 using MediatR;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +12,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
+using Swashbuckle.AspNetCore.Filters;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using Twitter.Data;
 using Twitter.Extensions;
 using Twitter.Middleware;
@@ -18,10 +24,6 @@ using Twitter.Options;
 using Twitter.Repositories;
 using Twitter.Repositories.Interfaces;
 using Twitter.Services;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,6 +71,8 @@ builder.Services.AddSwaggerGen(x =>
 {
 	x.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
 
+	x.ExampleFilters();
+
 	x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
 	{
 		Description = "JWT Authorization header using the Bearer scheme.",
@@ -79,7 +83,7 @@ builder.Services.AddSwaggerGen(x =>
 		Scheme = "Bearer"
 	});
 	x.AddSecurityRequirement(new OpenApiSecurityRequirement()
-	  {
+	{
 		{
 		  new OpenApiSecurityScheme
 		  {
@@ -94,9 +98,16 @@ builder.Services.AddSwaggerGen(x =>
 
 			},
 			new List<string>()
-		  }
-		});
+		}
+	});
+
+	var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+	var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+	x.IncludeXmlComments(xmlPath);
 });
+
+builder.Services.AddSwaggerExamplesFromAssemblies(Assembly.GetEntryAssembly());
+builder.Services.AddFluentValidationRulesToSwagger();
 
 var app = builder.Build();
 
