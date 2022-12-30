@@ -2,7 +2,7 @@
 using System;
 using Twitter.Commands;
 
-namespace Twitter.Examples.Requests
+namespace Twitter.Contracts.V1.Examples.Requests
 {
 	public class CreateFastPostCommandExample : IExamplesProvider<CreateFastPostCommand>
 	{

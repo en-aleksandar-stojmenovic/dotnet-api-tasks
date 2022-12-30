@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Twitter.Domain;
 
-namespace Twitter.Examples.Responses
+namespace Twitter.Contracts.V1.Examples.Responses
 {
 	public class ListFastPostResponseExample : IExamplesProvider<List<FastPost>>
 	{

@@ -2,7 +2,7 @@
 using System;
 using Twitter.Domain;
 
-namespace Twitter.Examples.Responses
+namespace Twitter.Contracts.V1.Examples.Responses
 {
 	public class FastPostResponseExample : IExamplesProvider<FastPost>
 	{

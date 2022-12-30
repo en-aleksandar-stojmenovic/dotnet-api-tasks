@@ -31,7 +31,7 @@ namespace Twitter.Controllers.V1
 		/// <response code = "200">Returns created fast post.</response>
 		/// <response code = "400">Throws exception if category id doesn't exists.</response>
 		[HttpPost(ApiRoutes.FastPost.Create)]
-		[ProducesResponseType(typeof(List<FastPost>), 200)]
+		[ProducesResponseType(typeof(FastPost), 200)]
 		[ProducesResponseType(typeof(ErrorDetails), 400)]
 		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Create([FromBody] CreateFastPostCommand command)
