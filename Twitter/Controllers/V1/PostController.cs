@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using Twitter.Contracts.V1;
 using Twitter.Contracts.V1.Requests;
 using Twitter.Domain;
@@ -8,14 +12,11 @@ using Twitter.Exceptions;
 using Twitter.Exceptions.ExceptionFilters;
 using Twitter.Extensions;
 using Twitter.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Twitter.Controllers.V1
 {
 	[ApiController]
+	[Produces("application/json")]
 	public class PostController : ControllerBase
 	{
 		private readonly IRepositoryWrapper _repository;
@@ -27,23 +28,44 @@ namespace Twitter.Controllers.V1
 			_mapper = mapper;
 		}
 
+		/// <summary>
+		/// Returns all posts.
+		/// </summary>
+		/// <returns>Returns all posts.</returns>
+		/// <response code = "200">Returns a list of posts.</response>
 		[HttpGet(ApiRoutes.Post.GetAll)]
+		[ProducesResponseType(typeof(List<Post>), 200)]
 		public async Task<ActionResult<List<Post>>> Get()
 		{
 			return Ok(await _repository.Post.FindAllPostsAsync());
 		}
 
+		/// <summary>
+		/// Returns a post.
+		/// </summary>
+		/// <returns>Returns a post.</returns>
+		/// <response code = "200">Returns a post if it is found.</response>
+		/// <response code = "404">Throws an exception if post doesn't exists.</response>
 		[HttpGet(ApiRoutes.Post.GetPost)]
+		[ProducesResponseType(typeof(Post), 200)]
+		[ProducesResponseType(typeof(ErrorDetails), 404)]
 		[CustomExceptionFilter(typeof(PostNotFoundException), HttpStatusCode.NotFound)]
 		public async Task<ActionResult<Post>> Get([FromRoute] Guid postId)
 		{
 			return Ok(await _repository.Post.FindPostByIdAsync(postId));
 		}
 
+		/// <summary>
+		/// Creates a post. Only users with admin role can create new post.
+		/// </summary>
+		/// <returns>Returns created post.</returns>
+		/// <response code = "200">Returns created post.</response>
+		/// <response code = "400">Throws an exception if category id doesn't exists.</response>
 		[Authorize(Roles = UserRoles.Admin)]
 		[HttpPost(ApiRoutes.Post.Create)]
+		[ProducesResponseType(typeof(Post), 200)]
+		[ProducesResponseType(typeof(ErrorDetails), 400)]
 		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
-		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
 		{
 			var mappedPost = _mapper.Map<Post>(postRequest);
@@ -57,8 +79,16 @@ namespace Twitter.Controllers.V1
 			return CreatedAtAction(nameof(Get), new { id = post.Id }, post);
 		}
 
+		/// <summary>
+		/// Deletes a post. Only users with admin role can delete a post.
+		/// </summary>
+		/// <returns>Returns true if a post is deleted.</returns>
+		/// <response code = "200">Returns true if a post is deleted.</response>
+		/// <response code = "400">Throws an exception if a post doesn't exists.</response>
 		[Authorize(Roles = UserRoles.Admin)]
 		[HttpDelete(ApiRoutes.Post.Delete)]
+		[ProducesResponseType(typeof(bool), 200)]
+		[ProducesResponseType(typeof(ErrorDetails), 400)]
 		[CustomExceptionFilter(typeof(PostBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> DeletePostById([FromRoute] Guid postId)
 		{
@@ -69,8 +99,18 @@ namespace Twitter.Controllers.V1
 			return Ok(deleted > 0);
 		}
 
+		/// <summary>
+		/// Updates a post. Users with admin role can update only their own posts.
+		/// </summary>
+		/// <returns>Returns updated post.</returns>
+		/// <response code = "200">Returns updated post.</response>
+		/// <response code = "400">Throws an exception if user doesn't own the post, or if category id doesn't exists.</response>
+		/// <response code = "404">Throws an exception if post doesn't exists.</response>
 		[Authorize(Roles = UserRoles.Admin)]
 		[HttpPut(ApiRoutes.Post.Update)]
+		[ProducesResponseType(typeof(bool), 200)]
+		[ProducesResponseType(typeof(ErrorDetails), 400)]
+		[ProducesResponseType(typeof(ErrorDetails), 404)]
 		[CustomExceptionFilter(typeof(PostNotFoundException), HttpStatusCode.NotFound)]
 		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
 		public async Task<IActionResult> Update([FromBody] UpdatePostRequest updateRequest)
