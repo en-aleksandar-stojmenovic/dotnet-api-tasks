@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentResults;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Twitter.Data;
 using Twitter.Domain;
+using Twitter.Domain.Errors;
 using Twitter.Exceptions;
 using Twitter.Repositories.Interfaces;
 
@@ -15,11 +17,16 @@ namespace Twitter.Repositories
 		{
 		}
 
-		public async Task<FastPost> CreateFastPost(FastPost postRequest)
+		public async Task<Result<FastPost>> CreateFastPost(FastPost postRequest)
 		{
 			if (await _context.Categories.FindAsync(postRequest.CategoryId) == null)
 			{
-				throw new CategoryBadRequestException("Category with Id: '" + postRequest.CategoryId + "' not found");
+				var result = Result.Fail(
+					new Error("Cannot create fast post",
+					new CategoryBadRequestError("Category with Id: " + postRequest.CategoryId + " doesn't exists."))
+					).Log();
+
+				return result;
 			}
 
 			postRequest.Id = Guid.NewGuid();
@@ -27,7 +34,7 @@ namespace Twitter.Repositories
 
 			Create(postRequest);
 
-			return postRequest;
+			return Result.Ok(postRequest);
 		}
 
 		public void DeleteFastPost(Guid id)

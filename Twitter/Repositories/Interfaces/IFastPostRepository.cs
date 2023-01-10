@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentResults;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Twitter.Domain;
@@ -10,6 +11,6 @@ namespace Twitter.Repositories.Interfaces
 		Task<FastPost> FindFastPostByIdAsync(Guid id);
 		Task<List<FastPost>> FindAllFastPostsAsync();
 		void DeleteFastPost(Guid id);
-		Task<FastPost> CreateFastPost(FastPost postRequest);
+		Task<Result<FastPost>> CreateFastPost(FastPost postRequest);
 	}
 }
