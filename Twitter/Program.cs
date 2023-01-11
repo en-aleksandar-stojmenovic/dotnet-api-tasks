@@ -1,3 +1,4 @@
+using FluentResults;
 using FluentValidation.AspNetCore;
 using MediatR;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -37,6 +38,11 @@ builder.Services.Configure<JsonOptions>(options =>
 
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();
+
+Result.Setup(cfg =>
+{
+	cfg.Logger = new ResultLoggerService(new LoggerManager());
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 			   options.UseSqlServer(

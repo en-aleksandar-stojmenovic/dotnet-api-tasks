@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentResults.Extensions.AspNetCore;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using Twitter.Contracts.V1;
 using Twitter.Domain;
 using Twitter.Exceptions;
 using Twitter.Exceptions.ExceptionFilters;
+using Twitter.Helpers;
 using Twitter.Queries;
 
 namespace Twitter.Controllers.V1
@@ -29,16 +31,20 @@ namespace Twitter.Controllers.V1
 		/// </summary>
 		/// <returns>Returns created fast post.</returns>
 		/// <response code = "200">Returns created fast post.</response>
-		/// <response code = "400">Throws exception if category id doesn't exists.</response>
+		/// <response code = "400">Returns error message if category id doesn't exists.</response>
 		[HttpPost(ApiRoutes.FastPost.Create)]
 		[ProducesResponseType(typeof(FastPost), 200)]
 		[ProducesResponseType(typeof(ErrorDetails), 400)]
-		[CustomExceptionFilter(typeof(CategoryBadRequestException), HttpStatusCode.BadRequest)]
-		public async Task<IActionResult> Create([FromBody] CreateFastPostCommand command)
+		public async Task<ActionResult<FastPost>> Create([FromBody] CreateFastPostCommand command)
 		{
 			var result = await _mediator.Send(command);
 
-			return Ok(result);
+			if (result.IsFailed)
+			{
+				return BadRequest(Util<FastPost>.ReadErrors(result));
+			}
+
+			return result.ToActionResult();
 		}
 
 		/// <summary>
@@ -50,7 +56,6 @@ namespace Twitter.Controllers.V1
 		[HttpGet(ApiRoutes.FastPost.GetPost)]
 		[ProducesResponseType(typeof(FastPost), 200)]
 		[ProducesResponseType(typeof(ErrorDetails), 404)]
-		[CustomExceptionFilter(typeof(FastPostNotFoundException), HttpStatusCode.NotFound)]
 		public async Task<ActionResult<FastPost>> ReadFastPost([FromRoute] Guid postId)
 		{
 			var query = new GetFastPostByIdQuery(postId);
