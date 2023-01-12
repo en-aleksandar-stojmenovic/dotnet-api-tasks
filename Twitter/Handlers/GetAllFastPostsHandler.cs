@@ -1,14 +1,15 @@
-﻿using MediatR;
-using Twitter.Domain;
-using Twitter.Queries;
-using Twitter.Repositories.Interfaces;
+﻿using FluentResults;
+using MediatR;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Twitter.Domain;
+using Twitter.Queries;
+using Twitter.Repositories.Interfaces;
 
 namespace Twitter.Handlers
 {
-	public class GetAllFastPostsHandler : IRequestHandler<GetAllFastPostsQuery, List<FastPost>>
+	public class GetAllFastPostsHandler : IRequestHandler<GetAllFastPostsQuery, Result<List<FastPost>>>
 	{
 		private readonly IRepositoryWrapper _repository;
 
@@ -17,7 +18,7 @@ namespace Twitter.Handlers
 			_repository = repository;
 		}
 
-		public async Task<List<FastPost>> Handle(GetAllFastPostsQuery request, CancellationToken cancellationToken)
+		public async Task<Result<List<FastPost>>> Handle(GetAllFastPostsQuery request, CancellationToken cancellationToken)
 		{
 			var fastPost = await _repository.FastPost.FindAllFastPostsAsync();
 

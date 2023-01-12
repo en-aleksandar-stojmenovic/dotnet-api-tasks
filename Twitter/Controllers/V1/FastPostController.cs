@@ -78,7 +78,7 @@ namespace Twitter.Controllers.V1
 
 			var result = await _mediator.Send(query);
 
-			return Ok(result);
+			return result.ToActionResult();
 		}
 
 		/// <summary>
