@@ -55,14 +55,17 @@ namespace Twitter.Repositories
 			return await FindByCondition(fastPost => EF.Functions.DateDiffHour(fastPost.Created, DateTime.Now) < 24).ToListAsync();
 		}
 
-		public async Task<FastPost> FindFastPostByIdAsync(Guid id)
+		public async Task<Result<FastPost>> FindFastPostByIdAsync(Guid id)
 		{
 			var fastPost = await FindByCondition(fastPost => fastPost.Id.Equals(id) && EF.Functions.DateDiffHour(fastPost.Created, DateTime.Now) < 24)
 						.FirstOrDefaultAsync();
 
 			if (fastPost == null)
 			{
-				throw new FastPostNotFoundException("FastPost with Id: '" + id + "' not found");
+				var result = Result.Fail(new Error("Cannot find the fast post"))
+				   .WithError(new FastPostNotFoundError("Fast post with id '" + id + "' is not available")).Log();
+
+				return result;
 			}
 
 			return fastPost;

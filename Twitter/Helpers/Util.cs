@@ -16,9 +16,9 @@ namespace Twitter.Helpers
 				{
 					errorDetails.Message += "ERROR: " + error.Message + ". ";
 
-					if (errorDetails.StatusCode == 0)
+					if (errorDetails.StatusCode == 0 && error.Metadata.ContainsKey("ErrorCode"))
 					{
-						errorDetails.StatusCode = Int32.Parse(error.Metadata.Values.ToString());
+						errorDetails.StatusCode = Int32.Parse(error.Metadata["ErrorCode"].ToString());
 					}
 				}
 				else
@@ -27,7 +27,7 @@ namespace Twitter.Helpers
 					{
 						errorDetails.Message += "ERROR: " + error.Message + ". Caused by ERROR: " + causedByError.Message;
 
-						if (errorDetails.StatusCode == 0)
+						if (errorDetails.StatusCode == 0 && error.Metadata.ContainsKey("ErrorCode"))
 						{
 							errorDetails.StatusCode = Int32.Parse(causedByError.Metadata["ErrorCode"].ToString());
 						}
