@@ -11,6 +11,7 @@ namespace Twitter.Domain
 		public DateTime Created { get; set; }
 		public Guid CategoryId { get; set; }
 		public Guid CreatedBy { get; set; }
+		public bool IsArchived { get; set; } = false;
 
 	}
 }
