@@ -52,7 +52,7 @@ namespace Twitter.Controllers.V1
 		/// </summary>
 		/// <returns>Returns a fast post.</returns>
 		/// <response code = "200">Returns a fast post.</response>
-		/// <response code = "404">Throws exception if fast post doesn't exists.</response>
+		/// <response code = "404">Returns error message if fast post is not found.</response>
 		[HttpGet(ApiRoutes.FastPost.GetPost)]
 		[ProducesResponseType(typeof(FastPost), 200)]
 		[ProducesResponseType(typeof(ErrorDetails), 404)]
@@ -62,7 +62,12 @@ namespace Twitter.Controllers.V1
 
 			var result = await _mediator.Send(query);
 
-			return Ok(result);
+			if (result.IsFailed)
+			{
+				return NotFound(Util<FastPost>.ReadErrors(result));
+			}
+
+			return result.ToActionResult();
 		}
 
 		/// <summary>

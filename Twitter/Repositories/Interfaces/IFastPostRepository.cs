@@ -8,7 +8,7 @@ namespace Twitter.Repositories.Interfaces
 {
 	public interface IFastPostRepository : IRepositoryBase<FastPost>
 	{
-		Task<FastPost> FindFastPostByIdAsync(Guid id);
+		Task<Result<FastPost>> FindFastPostByIdAsync(Guid id);
 		Task<Result<List<FastPost>>> FindAllFastPostsAsync();
 		void DeleteFastPost(Guid id);
 		Task<Result<FastPost>> CreateFastPost(FastPost postRequest);
