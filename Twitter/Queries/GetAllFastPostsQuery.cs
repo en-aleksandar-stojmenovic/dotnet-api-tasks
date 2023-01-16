@@ -1,10 +1,11 @@
-﻿using MediatR;
-using Twitter.Domain;
+﻿using FluentResults;
+using MediatR;
 using System.Collections.Generic;
+using Twitter.Domain;
 
 namespace Twitter.Queries
 {
-	public class GetAllFastPostsQuery : IRequest<List<FastPost>>
+	public class GetAllFastPostsQuery : IRequest<Result<List<FastPost>>>
 	{
 	}
 }

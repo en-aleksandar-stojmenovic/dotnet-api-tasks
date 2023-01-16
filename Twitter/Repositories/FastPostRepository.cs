@@ -50,9 +50,12 @@ namespace Twitter.Repositories
 			Delete(post);
 		}
 
-		public async Task<List<FastPost>> FindAllFastPostsAsync()
+		public async Task<Result<List<FastPost>>> FindAllFastPostsAsync()
 		{
-			return await FindByCondition(fastPost => EF.Functions.DateDiffHour(fastPost.Created, DateTime.Now) < 24).ToListAsync();
+			var result = await FindByCondition(fastPost
+				=> EF.Functions.DateDiffHour(fastPost.Created, DateTime.Now) < 24).ToListAsync();
+
+			return Result.Ok(result);
 		}
 
 		public async Task<Result<FastPost>> FindFastPostByIdAsync(Guid id)
