@@ -23,8 +23,8 @@ namespace Twitter.Repositories
 
 		public async Task<Post> FindPostByIdAsync(Guid id)
 		{
-			var post = await FindByCondition(post => post.Id.Equals(id))
-						.FirstOrDefaultAsync();
+			var post = await FindByCondition(post => post.Id.Equals(id) && post.IsArchived == false)
+						.SingleOrDefaultAsync();
 
 			if (post == null)
 			{
