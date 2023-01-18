@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Twitter.Data;
 using Twitter.Domain;
 using Twitter.Exceptions;
 using Twitter.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Twitter.Repositories
 {
@@ -23,8 +23,8 @@ namespace Twitter.Repositories
 
 		public async Task<Post> FindPostByIdAsync(Guid id)
 		{
-			var post = await FindByCondition(post => post.Id.Equals(id))
-						.FirstOrDefaultAsync();
+			var post = await FindByCondition(post => post.Id.Equals(id) && post.IsArchived == false)
+						.SingleOrDefaultAsync();
 
 			if (post == null)
 			{
@@ -62,7 +62,7 @@ namespace Twitter.Repositories
 		}
 		public void DeletePost(Guid postId)
 		{
-			var post = FindByCondition(post => post.Id.Equals(postId))
+			var post = FindByCondition(post => post.Id.Equals(postId) && post.IsArchived == false)
 						.FirstOrDefaultAsync().Result;
 
 			if (post == null)
@@ -70,7 +70,9 @@ namespace Twitter.Repositories
 				throw new PostBadRequestException("Post with Id: '" + postId + "' not found");
 			}
 
-			Delete(post);
+			post.IsArchived = true;
+
+			Update(post);
 		}
 
 		public async Task<bool> UserOwnsPostAsync(Guid postId, Guid userId)
