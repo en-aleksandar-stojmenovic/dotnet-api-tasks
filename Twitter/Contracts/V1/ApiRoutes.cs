@@ -23,6 +23,7 @@
 			public const string Create = Base + "/posts";
 			public const string Update = Base + "/posts";
 			public const string Delete = Base + "/posts/{postId}";
+			public const string NumberOfAvailablePosts = Base + "/numberofavailableposts";
 		}
 
 		public static class FastPost

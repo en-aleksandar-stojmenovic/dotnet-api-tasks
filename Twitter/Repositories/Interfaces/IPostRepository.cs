@@ -1,7 +1,7 @@
-﻿using Twitter.Domain;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Twitter.Domain;
 
 namespace Twitter.Repositories.Interfaces
 {
@@ -13,5 +13,6 @@ namespace Twitter.Repositories.Interfaces
 		Task<Post> UpdatePost(Post postRequest);
 		void DeletePost(Guid id);
 		Task<bool> UserOwnsPostAsync(Guid postId, Guid userId);
+		Task<int> NumberOfAvailablePosts(Guid? categoryId);
 	}
 }

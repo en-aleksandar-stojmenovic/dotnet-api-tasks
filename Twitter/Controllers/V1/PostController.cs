@@ -132,5 +132,17 @@ namespace Twitter.Controllers.V1
 
 			return CreatedAtAction(nameof(Get), new { id = updatedPost.Id }, updatedPost);
 		}
+
+		/// <summary>
+		/// Returns a number of available posts.
+		/// </summary>
+		/// <returns>Returns a number of available posts.</returns>
+		/// <response code = "200">Returns a number of available posts.</response>
+		[HttpGet(ApiRoutes.Post.NumberOfAvailablePosts)]
+		[ProducesResponseType(typeof(int), 200)]
+		public async Task<ActionResult<int>> NumberOfAvailablePosts([FromQuery] Guid? categoryId)
+		{
+			return Ok(await _repository.Post.NumberOfAvailablePosts(categoryId));
+		}
 	}
 }
