@@ -91,5 +91,13 @@ namespace Twitter.Repositories
 
 			return true;
 		}
+
+		public async Task<int> NumberOfAvailablePosts(Guid? categoryId)
+		{
+			if (categoryId == null)
+				return await FindByCondition(post => post.IsArchived == false).CountAsync();
+
+			return await FindByCondition(post => post.CategoryId.Equals(categoryId) && post.IsArchived == false).CountAsync();
+		}
 	}
 }
