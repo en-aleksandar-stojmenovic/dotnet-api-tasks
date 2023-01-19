@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Twitter.Data;
 using Twitter.Domain;
 using Twitter.Exceptions;
+using Twitter.Extensions;
 using Twitter.Repositories.Interfaces;
 
 namespace Twitter.Repositories
@@ -98,6 +100,23 @@ namespace Twitter.Repositories
 				return await FindByCondition(post => post.IsArchived == false).CountAsync();
 
 			return await FindByCondition(post => post.CategoryId.Equals(categoryId) && post.IsArchived == false).CountAsync();
+		}
+
+		public async Task<List<Post>> FindUserPostsAsync(Guid userId)
+		{
+			var posts = await FindByCondition(post => post.CreatedBy.Equals(userId) && post.IsArchived == false).OrderByDescending(post => post.Created).ToListAsync();
+
+			List<Post> userPosts = new List<Post>();
+
+			for (var i = 0; i < posts.Count; i++)
+			{
+
+				if (i == 0) userPosts.AddIfNotExists(posts[i]);
+				if (i == posts.Count - 3) userPosts.AddIfNotExists(posts[i]);
+				if (i == posts.Count - 1) userPosts.AddIfNotExists(posts[i]);
+			}
+
+			return userPosts;
 		}
 	}
 }
