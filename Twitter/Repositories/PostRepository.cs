@@ -104,17 +104,20 @@ namespace Twitter.Repositories
 
 		public async Task<List<Post>> FindUserPostsAsync(Guid userId)
 		{
-			var posts = await FindByCondition(post => post.CreatedBy.Equals(userId) && post.IsArchived == false).OrderByDescending(post => post.Created).ToListAsync();
+			var firstPost = await FindByCondition(post =>
+						post.CreatedBy.Equals(userId) && post.IsArchived == false).OrderBy(post => post.Created).FirstOrDefaultAsync();
+
+			var thirdPost = await FindByCondition(post =>
+						post.CreatedBy.Equals(userId) && post.IsArchived == false).OrderBy(post => post.Created).Skip(2).Take(1).FirstOrDefaultAsync();
+
+			var lastPost = await FindByCondition(post =>
+						post.CreatedBy.Equals(userId) && post.IsArchived == false).OrderBy(post => post.Created).LastOrDefaultAsync();
 
 			List<Post> userPosts = new List<Post>();
 
-			for (var i = 0; i < posts.Count; i++)
-			{
-
-				if (i == 0) userPosts.AddIfNotExists(posts[i]);
-				if (i == posts.Count - 3) userPosts.AddIfNotExists(posts[i]);
-				if (i == posts.Count - 1) userPosts.AddIfNotExists(posts[i]);
-			}
+			userPosts.AddIfNotExists(lastPost);
+			userPosts.AddIfNotExists(thirdPost);
+			userPosts.AddIfNotExists(firstPost);
 
 			return userPosts;
 		}

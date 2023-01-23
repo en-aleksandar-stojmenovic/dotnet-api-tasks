@@ -19,7 +19,7 @@ namespace Twitter.Extensions
 
 		public static bool AddIfNotExists<T>(this List<T> list, T value)
 		{
-			if (!list.Contains(value))
+			if (!list.Contains(value) && value is not null)
 			{
 				list.Add(value);
 				return true;
