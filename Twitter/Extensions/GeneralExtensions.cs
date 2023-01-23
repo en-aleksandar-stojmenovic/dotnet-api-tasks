@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Twitter.Extensions
@@ -14,6 +15,16 @@ namespace Twitter.Extensions
 			}
 
 			return Guid.Parse(httpContext.User.Claims.Single(x => x.Type == "id").Value);
+		}
+
+		public static bool AddIfNotExists<T>(this List<T> list, T value)
+		{
+			if (!list.Contains(value) && value is not null)
+			{
+				list.Add(value);
+				return true;
+			}
+			return false;
 		}
 	}
 }

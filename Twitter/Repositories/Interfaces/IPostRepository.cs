@@ -14,5 +14,6 @@ namespace Twitter.Repositories.Interfaces
 		void DeletePost(Guid id);
 		Task<bool> UserOwnsPostAsync(Guid postId, Guid userId);
 		Task<int> NumberOfAvailablePosts(Guid? categoryId);
+		Task<List<Post>> FindUserPostsAsync(Guid userId);
 	}
 }
