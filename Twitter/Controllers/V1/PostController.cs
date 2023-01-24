@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,10 +8,12 @@ using System.Net;
 using System.Threading.Tasks;
 using Twitter.Contracts.V1;
 using Twitter.Contracts.V1.Requests;
+using Twitter.Contracts.V1.Responses;
 using Twitter.Domain;
 using Twitter.Exceptions;
 using Twitter.Exceptions.ExceptionFilters;
 using Twitter.Extensions;
+using Twitter.Queries;
 using Twitter.Repositories.Interfaces;
 
 namespace Twitter.Controllers.V1
@@ -21,11 +24,13 @@ namespace Twitter.Controllers.V1
 	{
 		private readonly IRepositoryWrapper _repository;
 		private readonly IMapper _mapper;
+		private readonly IMediator _mediator;
 
-		public PostController(IRepositoryWrapper repository, IMapper mapper)
+		public PostController(IRepositoryWrapper repository, IMapper mapper, IMediator mediator)
 		{
 			_repository = repository;
 			_mapper = mapper;
+			_mediator = mediator;
 		}
 
 		/// <summary>
@@ -38,6 +43,29 @@ namespace Twitter.Controllers.V1
 		public async Task<ActionResult<List<Post>>> Get()
 		{
 			return Ok(await _repository.Post.FindAllPostsAsync());
+		}
+
+		/// <summary>
+		/// Returns posts with pagination.
+		/// </summary>
+		/// <returns>Returns posts with pagination.</returns>
+		/// <response code = "200">Returns a list of posts with pagination.</response>
+		[HttpGet(ApiRoutes.Post.ReadAll)]
+		[ProducesResponseType(typeof(PagedResponse<Post>), 200)]
+		public async Task<IActionResult> ReadAllPosts([FromQuery] PaginationQuary paginationQuary)
+		{
+			var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuary);
+
+			var posts = await _repository.Post.ReadAllPostsAsync(paginationFilter);
+
+			var paginationResponse = new PagedResponse<Post>
+			{
+				Data = posts,
+				PageNumber = paginationFilter.PageNumber,
+				PageSize = paginationFilter.PageSize,
+			};
+
+			return Ok(paginationResponse);
 		}
 
 		/// <summary>
