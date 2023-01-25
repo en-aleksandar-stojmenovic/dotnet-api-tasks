@@ -130,9 +130,17 @@ namespace Twitter.Repositories
 			}
 
 			var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-			return await FindByCondition(post =>
+
+			var posts = await FindByCondition(post =>
 						post.CategoryId.Equals(paginationFilter.CategoryId) && post.IsArchived == false)
 						.Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
+
+			if (!posts.Any())
+			{
+				throw new PostNotFoundException("Posts not found");
+			}
+
+			return posts;
 		}
 	}
 }
