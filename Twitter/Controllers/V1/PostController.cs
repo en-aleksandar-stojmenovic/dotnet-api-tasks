@@ -7,10 +7,12 @@ using System.Net;
 using System.Threading.Tasks;
 using Twitter.Contracts.V1;
 using Twitter.Contracts.V1.Requests;
+using Twitter.Contracts.V1.Responses;
 using Twitter.Domain;
 using Twitter.Exceptions;
 using Twitter.Exceptions.ExceptionFilters;
 using Twitter.Extensions;
+using Twitter.Queries;
 using Twitter.Repositories.Interfaces;
 
 namespace Twitter.Controllers.V1
@@ -41,11 +43,34 @@ namespace Twitter.Controllers.V1
 		}
 
 		/// <summary>
+		/// Returns posts with pagination.
+		/// </summary>
+		/// <returns>Returns posts with pagination.</returns>
+		/// <response code = "200">Returns a list of posts with pagination.</response>
+		[HttpGet(ApiRoutes.Post.ReadAll)]
+		[ProducesResponseType(typeof(PagedResponse<Post>), 200)]
+		public async Task<IActionResult> ReadAllPosts([FromQuery] PaginationQuery paginationQuery)
+		{
+			var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuery);
+
+			var posts = await _repository.Post.ReadAllPostsAsync(paginationFilter);
+
+			var paginationResponse = new PagedResponse<Post>
+			{
+				Data = posts,
+				PageNumber = paginationFilter.PageNumber,
+				PageSize = paginationFilter.PageSize,
+			};
+
+			return Ok(paginationResponse);
+		}
+
+		/// <summary>
 		/// Returns a post.
 		/// </summary>
 		/// <returns>Returns a post.</returns>
 		/// <response code = "200">Returns a post if it is found.</response>
-		/// <response code = "404">Throws an exception if post doesn't exists.</response>
+		/// <response code = "404">Throws an exception if post doesn't exist.</response>
 		[HttpGet(ApiRoutes.Post.GetPost)]
 		[ProducesResponseType(typeof(Post), 200)]
 		[ProducesResponseType(typeof(ErrorDetails), 404)]
@@ -60,7 +85,7 @@ namespace Twitter.Controllers.V1
 		/// </summary>
 		/// <returns>Returns created post.</returns>
 		/// <response code = "200">Returns created post.</response>
-		/// <response code = "400">Throws an exception if category id doesn't exists.</response>
+		/// <response code = "400">Throws an exception if category id doesn't exist.</response>
 		[Authorize(Roles = UserRoles.Admin)]
 		[HttpPost(ApiRoutes.Post.Create)]
 		[ProducesResponseType(typeof(Post), 200)]
@@ -84,7 +109,7 @@ namespace Twitter.Controllers.V1
 		/// </summary>
 		/// <returns>Returns true if a post is deleted.</returns>
 		/// <response code = "200">Returns true if a post is deleted.</response>
-		/// <response code = "400">Throws an exception if a post doesn't exists.</response>
+		/// <response code = "400">Throws an exception if a post doesn't exist.</response>
 		[Authorize(Roles = UserRoles.Admin)]
 		[HttpDelete(ApiRoutes.Post.Delete)]
 		[ProducesResponseType(typeof(bool), 200)]
@@ -104,8 +129,8 @@ namespace Twitter.Controllers.V1
 		/// </summary>
 		/// <returns>Returns updated post.</returns>
 		/// <response code = "200">Returns updated post.</response>
-		/// <response code = "400">Throws an exception if user doesn't own the post, or if category id doesn't exists.</response>
-		/// <response code = "404">Throws an exception if post doesn't exists.</response>
+		/// <response code = "400">Throws an exception if user doesn't own the post, or if category id doesn't exist.</response>
+		/// <response code = "404">Throws an exception if post doesn't exist.</response>
 		[Authorize(Roles = UserRoles.Admin)]
 		[HttpPut(ApiRoutes.Post.Update)]
 		[ProducesResponseType(typeof(bool), 200)]

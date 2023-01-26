@@ -121,5 +121,21 @@ namespace Twitter.Repositories
 
 			return userPosts;
 		}
+
+		public async Task<List<Post>> ReadAllPostsAsync(PaginationFilter paginationFilter)
+		{
+			if (paginationFilter.CategoryId is null)
+			{
+				return await FindAll().ToListAsync();
+			}
+
+			var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+
+			var posts = await FindByCondition(post =>
+						post.CategoryId.Equals(paginationFilter.CategoryId) && post.IsArchived == false)
+						.Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
+
+			return posts;
+		}
 	}
 }

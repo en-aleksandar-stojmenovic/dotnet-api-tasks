@@ -9,6 +9,7 @@ namespace Twitter.Repositories.Interfaces
 	{
 		Task<Post> FindPostByIdAsync(Guid id);
 		Task<IEnumerable<Post>> FindAllPostsAsync();
+		Task<List<Post>> ReadAllPostsAsync(PaginationFilter paginationFilter);
 		Task<Post> CreatePost(Post postRequest);
 		Task<Post> UpdatePost(Post postRequest);
 		void DeletePost(Guid id);
