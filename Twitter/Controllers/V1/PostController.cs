@@ -47,11 +47,9 @@ namespace Twitter.Controllers.V1
 		/// </summary>
 		/// <returns>Returns posts with pagination.</returns>
 		/// <response code = "200">Returns a list of posts with pagination.</response>
-		/// <response code = "404">Throws an exception if posts don't exist.</response>
 		[HttpGet(ApiRoutes.Post.ReadAll)]
 		[ProducesResponseType(typeof(PagedResponse<Post>), 200)]
-		[CustomExceptionFilter(typeof(PostNotFoundException), HttpStatusCode.NotFound)]
-		public async Task<IActionResult> ReadAllPosts([FromQuery] PaginationQuary paginationQuary)
+		public async Task<IActionResult> ReadAllPosts([FromQuery] PaginationQuery paginationQuary)
 		{
 			var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuary);
 

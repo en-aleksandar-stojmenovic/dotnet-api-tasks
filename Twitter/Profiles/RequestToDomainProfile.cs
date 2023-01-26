@@ -8,7 +8,7 @@ namespace Twitter.Profiles
 	{
 		public RequestToDomainProfile()
 		{
-			CreateMap<PaginationQuary, PaginationFilter>();
+			CreateMap<PaginationQuery, PaginationFilter>();
 		}
 	}
 }

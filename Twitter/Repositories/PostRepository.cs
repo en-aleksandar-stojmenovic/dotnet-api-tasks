@@ -135,11 +135,6 @@ namespace Twitter.Repositories
 						post.CategoryId.Equals(paginationFilter.CategoryId) && post.IsArchived == false)
 						.Skip(skip).Take(paginationFilter.PageSize).ToListAsync();
 
-			if (!posts.Any())
-			{
-				throw new PostNotFoundException("Posts not found");
-			}
-
 			return posts;
 		}
 	}

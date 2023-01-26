@@ -2,16 +2,16 @@
 
 namespace Twitter.Queries
 {
-	public class PaginationQuary
+	public class PaginationQuery
 	{
-		public PaginationQuary()
+		public PaginationQuery()
 		{
 			PageNumber = 1;
 			PageSize = 100;
 			CategoryId = null;
 		}
 
-		public PaginationQuary(int pageNumber, int pageSize, Guid categoryId)
+		public PaginationQuery(int pageNumber, int pageSize, Guid categoryId)
 		{
 			PageNumber = pageNumber;
 			PageSize = pageSize;
