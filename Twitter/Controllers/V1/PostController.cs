@@ -49,9 +49,9 @@ namespace Twitter.Controllers.V1
 		/// <response code = "200">Returns a list of posts with pagination.</response>
 		[HttpGet(ApiRoutes.Post.ReadAll)]
 		[ProducesResponseType(typeof(PagedResponse<Post>), 200)]
-		public async Task<IActionResult> ReadAllPosts([FromQuery] PaginationQuery paginationQuary)
+		public async Task<IActionResult> ReadAllPosts([FromQuery] PaginationQuery paginationQuery)
 		{
-			var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuary);
+			var paginationFilter = _mapper.Map<PaginationFilter>(paginationQuery);
 
 			var posts = await _repository.Post.ReadAllPostsAsync(paginationFilter);
 
